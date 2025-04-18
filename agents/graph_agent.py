@@ -21,7 +21,7 @@ def clean_json_response(response: str) -> str:
 
 
 # ----------- QUERY BUILDER NODE -----------
-def make_query_builder_agent(elements) -> RunnableLambda:
+def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
     system_prompt = """
         You are an expert assistant for querying SysML models, specifically for a system that manages TMT project documentation.  
         You are tasked with generating queries to search through SysML elements with a wide range of attributes, including relationships between elements.
@@ -131,7 +131,7 @@ def make_query_builder_agent(elements) -> RunnableLambda:
 
         results = []
         attempts = 0
-        max_attempts = 10
+        max_attempts = max_retry
         max_results_length = 200000
 
         while attempts < max_attempts:
@@ -157,12 +157,11 @@ def make_query_builder_agent(elements) -> RunnableLambda:
                 
                 if len(results) == 1 and result_char_len < max_results_length/5:
                     # Include relations with recursion
-                    print("Found one element, including relations with recursion.")
-                    print(results) # Use get_basic_info instead of serialize
-                    """for element in elements.values():
+                    print("Found one element, including relations with recursion.")# Use get_basic_info instead of serialize
+                    for element in elements.values():
                         if element.id == results[0]["id"]:
-                            results = element.serialize(max_depth=2)
-                            break"""
+                            results = element.serialize(max_depth=1)
+                            break
                     #TODO: FIX SERIALIZER 
 
                 if len(results) != 0 or result_char_len >= max_results_length:

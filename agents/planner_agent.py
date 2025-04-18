@@ -12,17 +12,6 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-class AgentState(TypedDict):
-    messages: Annotated[Sequence[BaseMessage], add_messages]
-    rag_context: Dict[str, Any]
-    question_for_rag: str
-    question_for_model: str
-    model_query_result: Dict[str, Any]
-    rag_agent_result: str
-    final_answer: str
-    diagrams: List[str]
-    complete: bool
-
 
 def make_planner_agent() -> RunnableLambda:
     system_prompt = """
@@ -57,7 +46,7 @@ def make_planner_agent() -> RunnableLambda:
     Always pass the user's question to both agents if unsure.
     """
 
-    def _planner(state: AgentState) -> AgentState:
+    def _planner() -> RunnableLambda:
         question = next((m.content for m in reversed(state.get("messages", [])) if isinstance(m, HumanMessage)), "")
         print(f"[PLANNER] User question: {question}")
 
@@ -115,27 +104,3 @@ def make_planner_agent() -> RunnableLambda:
             }
 
     return RunnableLambda(_planner)
-
-
-# Instantiate the agent
-planner_agent = make_planner_agent()
-
-# Prepare a test state with a sample question
-test_state = {
-    "messages": [
-        HumanMessage(content="Which physical components implement Req.1.2.3?")
-    ],
-    "rag_context": {},
-    "model_query_result": {},
-    "rag_agent_result": "",
-    "final_answer": "",
-    "diagrams": [],
-    "complete": False
-}
-
-# Invoke the agent
-result = planner_agent.invoke(test_state)
-
-# Print the result
-from pprint import pprint
-pprint(result["messages"][-1].content)

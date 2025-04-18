@@ -4,6 +4,7 @@ from agents.tools.vector_db_search import retrieve_text_from_azure_search
 from agents.tools.diagram_retriever import diagram_retriever
 from agents.summarizer_agent import Summarizer
 from agents.reviewer_agent import make_reviewer_agent
+from agents.planner_agent import make_planner_agent
 from loaders.json_loader import load_elements
 
 from typing import Callable, Dict, Any, List
@@ -26,26 +27,22 @@ import os
 load_dotenv()
 
 # ----------- BUILD STATE GRAPH -----------
-def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable):
-    sysml_query_agent = make_query_builder_agent(
-        elements
-    )
+def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable, settings: dict):
+
+    sysml_retry_num = settings.get("sysml_retry_num", 8)
+    sysml_query_agent = make_query_builder_agent(elements, sysml_retry_num)
+
+    rag_max_documents = settings.get("rag_max_documents", 5)
     
     rag_agent = make_rag_agent(
-        lambda q: retrieve_text_from_azure_search(q, 0, 5, True, True)  # Example retriever function
+        lambda q: retrieve_text_from_azure_search(q, 0, rag_max_documents, True, True) 
     )
+
+    reviewer_agent = make_reviewer_agent(max_reviews=settings.get("max_retry_reviewer", 1))
+
     diagram_retriever_node = RunnableLambda(diagram_retriever)
-
-    reviewer_agent = make_reviewer_agent()
-
     summarizer = Summarizer()
     summarizer_runnable = RunnableLambda(summarizer)
-
-    def review_decision(state: Dict[str, Any]) -> str:
-        print("Review decision state:", state.get("call"))
-        if state.get("complete") is True:
-            return "final"
-        return state.get("call", "rag_agent")  # fallback if call is missing
 
     # Define agent state
     class AgentState(TypedDict):
@@ -58,40 +55,54 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
         final_answer: str
         diagrams: List[str]
         complete: bool
+        retry_count: int
 
     # Create the graph and link the nodes
     graph = StateGraph(AgentState)
-    #graph.add_node("planner", reviewer_agent)
+
+    def review_decision(state: Dict[str, Any]) -> str:
+        return state.get("call", "final")
+    def set_retry_count(state: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            **state,
+            "retry_count": 0
+        }
+    
+    if settings.get("enable_planner_agent", False):
+        planner_agent = make_planner_agent()
+        graph.add_node("planner", planner_agent)
+        graph.set_entry_point("planner")
+        graph.add_edge("planner", "sysml_query_agent")
+
+    else:
+        graph.add_node("set_retry_count", set_retry_count)
+        graph.set_entry_point("set_retry_count")
+        graph.add_edge("set_retry_count", "sysml_query_agent")
+        
     graph.add_node("sysml_query_agent", sysml_query_agent)
     graph.add_node("rag_agent", rag_agent)
     graph.add_node("diagram_retriever", diagram_retriever_node)
     graph.add_node("summarizer", summarizer_runnable)
-    #graph.add_node("reviewer", reviewer_agent)
 
-
-    # Define dynamic flow (routing based on user input)
-
-    #graph.set_entry_point("planner")
-    #graph.add_edge("planner", "sysml_query_agent")
-
-    graph.set_entry_point("sysml_query_agent")
     graph.add_edge("sysml_query_agent", "rag_agent")
     graph.add_edge("rag_agent", "diagram_retriever")
-
     graph.add_edge("diagram_retriever", "summarizer")
 
-    """graph.add_edge("summarizer", "reviewer")
-    graph.add_conditional_edges(
-        "reviewer",
-        review_decision,
-        {
-            "final": END,
-            "model_query_agent": "sysml_query_agent",
-            "rag_agent": "rag_agent"
-        }
-    )"""
+    if settings.get("enable_reviewer_agent", False):
 
-    graph.add_edge("summarizer", END)
+        graph.add_node("reviewer", reviewer_agent)
+        graph.add_edge("summarizer", "reviewer")
+        graph.add_conditional_edges(
+            "reviewer",
+            review_decision,
+            {
+                "final": END,
+                "sysml_query_agent": "sysml_query_agent",  # rerun query-builder
+                "rag_agent": "rag_agent",                  # rerun RAG search
+            },
+        )
+    else:
+        graph.add_edge("summarizer", END)
 
     checkpointer = InMemorySaver()
 
@@ -101,7 +112,7 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
 
 # ----------- EXECUTION OF QUERY -----------
 
-def execute_agent_query(user_input: str, logger=None) -> dict:
+def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
     # Create a container to show progress
     progress_area = logger.container() if logger else None
 
@@ -123,7 +134,7 @@ def execute_agent_query(user_input: str, logger=None) -> dict:
 
     # Step 2: Build the agent
     log("Building LangGraph agent...")
-    graph = build_sysml_langgraph_agent(elements_local, retrieve_text_from_azure_search)
+    graph = build_sysml_langgraph_agent(elements_local, retrieve_text_from_azure_search, settings)
     log("LangGraph agent ready.")
 
     # Step 3: Execute the query
@@ -133,8 +144,6 @@ def execute_agent_query(user_input: str, logger=None) -> dict:
     final_state = {}
 
     for event in graph.stream(input=user_input, config=config, stream_mode="updates"):
-        print("------------------------")
-        print(f"Event: {event}")
         print("------------------------")
         # Safely access type using getattr (for robustness)
         print(f"Event type: {list(event.keys())[0]}")
@@ -157,10 +166,6 @@ def execute_agent_query(user_input: str, logger=None) -> dict:
                     log(f"📊 Found {len(node_output['diagrams'])} diagrams")
                 if node_name == "summarizer":
                     log(f"📜 Summarizer input tokens")
-
-
-            
-        
 
     log("✅ Agent completed.")
 
