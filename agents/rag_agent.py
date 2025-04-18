@@ -1,0 +1,88 @@
+from typing import List, Dict
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.runnables import RunnableLambda
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import AzureChatOpenAI
+from langgraph.graph import StateGraph, END
+from langchain_core.messages import BaseMessage
+from langchain_core.runnables import RunnableLambda
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from typing import List, Dict, Callable
+from dotenv import load_dotenv
+import os
+# Load environment variables from .env file
+load_dotenv()
+
+# ----------- RAG AGENT DEFINITION -----------
+def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
+    system_prompt = """
+            You are an expert assistant on the Thirty Meter Telescope (TMT) project. 
+            Your role is to support systems engineers and scientists by providing accurate, 
+            well-cited answers based on the TMT project documentation, including but not limited to:
+            - Science Requirements Document (SRD)
+            - Observatory Architecture Document (OAD)
+            - Operations Requirements Document (OpsRD)
+            - Detailed Science Case (DSC)
+            
+            When given a question, analyze the provided document context and respond:
+            - Clearly and concisely
+            - Using phrases from the source context whenever possible
+            - With focus on TMT system capabilities, design rationale, and scientific goals
+            - If you encounter IDs mark them in the response as [ID]
+
+            If the context is insufficient to answer confidently, state that clearly.
+            Do not fabricate information or guess.
+        """
+    def _agent(state: dict) -> dict:
+        messages = state["messages"]
+        # If not found, check the messages
+        for msg in reversed(messages):
+            if isinstance(msg, HumanMessage):
+                q = msg.content
+                break
+        
+        #extract the question from question_for_rag
+
+        question = q
+     
+        # Retrieve context chunks for the question
+        context_chunks = retriever_fn(question)
+        context = context_chunks
+        print(f"[RAG] query: {question}")
+
+        # Build the prompt
+        prompt = ChatPromptTemplate.from_template(
+            "{system_prompt}\n\nContext:\n{context}\n\nQuestion: {question}"
+        )
+
+        chain = (
+            prompt
+            | AzureChatOpenAI(
+                deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+                api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+                temperature=0,
+                seed=0,
+            )
+            | StrOutputParser()
+        )
+
+        # Get the response from the chain
+        answer = chain.invoke({
+            "system_prompt": system_prompt,
+            "context": context,
+            "question": question
+        })
+
+        return {
+            **state,  # Keep everything from the original state
+            "rag_context": context,
+            "rag_agent_result": answer,
+            "messages": messages + [AIMessage(content=answer)]
+        }
+    return RunnableLambda(_agent)
+

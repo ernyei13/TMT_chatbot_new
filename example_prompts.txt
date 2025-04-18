@@ -1,0 +1,81 @@
+Research question: 
+
+
+-Can LLMS be used to answer nlp questions with nlp answers complex system models.Is it feasable to help engineers with (yes)
+-Engineering assistant how reliable (ismert elemeket/strukturakat megtalal e)
++++
+(mindegyikhez egy konkret leiras)
+osszesitve 10 az osszeshez
++++
+---easy questons: konkret elemeke
+---medium questions: korbeirok elemeket és koncepteket / kapcsolatok mentén keresek elemeket
+---hard question: bármi
+-is it usefull, 
+-
+
+
+
+🔍 Model Query Examples
+Which physical components implement Req.X.Y?
+
+What other components are required for Comp.X.Y to function?
+
+What is the operating principle of the Subsystem.X.Y subsystem?
+
+Why is the X.Y communication link important in terms of functionality?
+
+What timing constraints apply to the X.Y subsystem?
+
+🔧 Model Quality & Maintenance
+Which part of the model is incomplete and needs further specification?
+
+Which part of the model is of low quality, where methodological errors were made and should be improved?
+
+🧠 Knowledge Extraction & Design Support
+I'm looking for the component that performs a specific function (e.g., does 'xy').
+
+Suggest a modeling approach for an xy component.
+
+Describe the key information about the xy component for onboarding purposes.
+
+Why was the xy component designed this way?
+
+🔄 System Behavior & Validation
+How does xy data flow through the model?
+
+Is there a single point of failure in the model?
+
+Does the xy component in the model comply with the following specification?
+
+The client gave the following feedback — please provide development suggestions.
+
+Are there duplicate elements in the model?
+
+
+
+
+
+
+Req.X.Y-t milyen fizikai komponensek valósítanak meg?
+Comp.X.Y komponens működéséhez milyen más komponensekre vanszükég?
+Mi az Subsystem.X.Y alrendszernek a működési elve?
+Az X.Y kommunikációs kapcsolat milyen funkciók miatt fontos?
+Milyen időzítési követelmények vonatkoznak X.Y alrendszerre?
+
+- melyik része a modellnek hiányos, amit tovább kéne specifikálni?
+- melyik része a modellnek alacsony minöségű, amin módszertani hibákat követtünk el, és javítani kellene?
+- keresem azt a komponenst ami xy dolgot csinál
+- adj egy javasolatot egy xy komponens modellezéséhez
+- írd le nekem xy komponens ről fontos tudnivalókat, onboardinghoz
+- miért így lett megtervezve az xy komponens?
+
+Hogyan áramlik a modellben az xy adat?
+ 
+Van a modellben simgle point of failure?
+ 
+Megfelel a modell xy komponense a következő specifikációnak?
+ 
+A megrendelő a következő vosszajelzéseket adta, kérlek adj fejlesztési javaslatot
+ 
+Van duplikált elem a modellben?
+ 

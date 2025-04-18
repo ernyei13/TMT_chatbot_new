@@ -1,0 +1,17 @@
+[
+    {
+      "id": "TC-1",
+      "category": "Model Query Examples",
+      "question": "Which physical components implement REQ-1-OAD-1149?",
+      "expected_answer": "The NFIRAOS system and the Laser Guide Star Facility (LGSF) implement REQ-1-OAD-1149 by enabling diffraction-limited near-IR observations with adaptive optics.",
+      "keywords": [
+        "NFIRAOS",
+        "LGSF",
+        "REQ-1-OAD-1149", 
+        "physical components",
+        "adaptive optics",
+        "near-IR observations"
+      ],
+      "model elements": "id"
+    }
+]

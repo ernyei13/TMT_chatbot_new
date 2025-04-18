@@ -1,0 +1,240 @@
+Stereotype: _9_0_be00301_1108044380615_150487_0
+  Count: 1228
+  First Element: name=APS Power inside the Enclosure, type=Diagram, id=_17_0_2_3_b4c02e1_1380809976981_576006_43117
+Stereotype: x
+  Count: 1
+  First Element: name=APS Power inside the Enclosure, type=Diagram, id=_17_0_2_3_b4c02e1_1380809976981_576006_43117
+Stereotype: _17_0_2_3_897027c_1377650427029_161201_39966
+  Count: 4333
+  First Element: name=Appendix, type=Class, id=_1217_719f575a-1647-45a9-b43f-a3ffab4eb319
+Stereotype: _17_0_3_85f027d_1363320204928_98443_3013
+  Count: 4296
+  First Element: name=Appendix, type=Class, id=_1217_719f575a-1647-45a9-b43f-a3ffab4eb319
+Stereotype: _18_0_2_b4c02e1_1422576771648_76971_83985
+  Count: 4333
+  First Element: name=Appendix, type=Class, id=_1217_719f575a-1647-45a9-b43f-a3ffab4eb319
+Stereotype: _17_0_2_3_ff3038a_1383749269646_31940_44489
+  Count: 95
+  First Element: name=APS Architecture, type=Class, id=_2ca33d85-e793-40fa-9f3a-b3c90e37fd87__104_c171e104-9f6d-4620-82b4-d4afad9f2bca
+Stereotype: _15_0_be00301_1199377756297_348405_2678
+  Count: 717
+  First Element: name=entrance Requirements and conditions, type=Property, id=_18_0_5_baa02e2_1453405750930_578185_150304
+Stereotype: _17_0_1_244d03ea_1319490921274_829705_23417
+  Count: 12
+  First Element: name=Get Requirements Diagram, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580861904987_753512_3038
+Stereotype: _11_5EAPbeta_be00301_1147870196585_633942_1728
+  Count: 41
+  First Element: name=Reconstructor Parameter Generator, type=ActivityPartition, id=_18_0_6_f1d0357_1490220609848_624747_182956
+Stereotype: _11_5EAPbeta_be00301_1147767840464_372327_467
+  Count: 41
+  First Element: name=eq, type=Property, id=_18_0_5_baa02e2_1457644870935_425691_162742
+Stereotype: _18_0beta_8e8028e_1384177586203_506524_3245
+  Count: 28
+  First Element: name=Rollup Online Result, type=Diagram, id=_18_0_5_baa02e2_1454259524541_193889_150069
+Stereotype: _15_0_be00301_1199378032543_992832_3096
+  Count: 57
+  First Element: name=context, type=Property, id=_18_0_5_baa02e2_1457644867565_276021_162621
+Stereotype: _17_0_2_3_eac0346_1374701945748_238477_29309
+  Count: 31
+  First Element: name=Interfaces Table, type=StructuredActivityNode, id=_17_0_2_3_41e01aa_1397679856755_460474_64189
+Stereotype: _11_5EAPbeta_be00301_1147420812402_281263_364
+  Count: 39
+  First Element: name=Viewpoint: Image with Caption, type=Class, id=_18_0_2_b4c02e1_1426693853396_584103_137722
+Stereotype: _17_0_2_3_407019f_1375477696989_696093_29350
+  Count: 40
+  First Element: name=Description, type=CallBehaviorAction, id=_17_0_2_3_41e01aa_1398322049094_620859_62217
+Stereotype: _17_0beta_e9b034a_1286943326484_87480_1809
+  Count: 48
+  First Element: name=APS interactive silent, type=Class, id=_18_0_4_baa02e2_1436383662551_14641_201340
+Stereotype: _11_5EAPbeta_be00301_1147767804973_159489_404
+  Count: 29
+  First Element: name=Drive Conversion, type=Class, id=_18_0_5_baa02e2_1457644848059_516025_162253
+Stereotype: _11_5EAPbeta_be00301_1147436061009_177713_1911
+  Count: 35
+  First Element: name=Sector Switch data, type=Property, id=_17_0_2_3_897027c_1386346758151_507579_60599
+Stereotype: _17_0_1_244d03ea_1319490658057_783239_23196
+  Count: 24
+  First Element: name=Select Only Activities, type=CallBehaviorAction, id=_18_0_5_c0402fd_1465848449734_737989_149248
+Stereotype: _17_0_2_3_87b0275_1371477871400_792964_43374
+  Count: 12
+  First Element: name=TMT-APS Use Cases, type=Class, id=_18_0_2_b4c02e1_1435176831233_484911_180279
+Stereotype: _11_5EAPbeta_be00301_1148632817486_155219_3
+  Count: 10
+  First Element: name=TMT Requirement Customization, type=Class, id=_17_0_2_3_b4c02e1_1386876001158_113357_61923
+Stereotype: _17_0_2_3_e81034b_1378849795852_475880_29502
+  Count: 16
+  First Element: name=Relevant Connectors for ChildA, type=CallBehaviorAction, id=_18_5_3_c0402fd_1526687903182_630372_20786
+Stereotype: _11_5EAPbeta_be00301_1147866677244_999655_1628
+  Count: 19
+  First Element: name=IRIS, type=CallBehaviorAction, id=_18_0_6_f1d0357_1490220407127_943296_182401
+Stereotype: _17_0_1_244d03ea_1319512564304_251824_28229
+  Count: 21
+  First Element: name=Date, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580858628643_489294_1098
+Stereotype: _17_0_3_17530432_1320213032822_616987_2338
+  Count: 9
+  First Element: name=clock, type=Port, id=_18_0_6_876026b_1477787279301_75705_174842
+Stereotype: _11_5_be00301_1151908232109_493412_157
+  Count: 21
+  First Element: name=Traceability, type=Property, id=_18_0_4_baa02e2_1433528431470_438551_144134
+Stereotype: _17_0_1_244d03ea_1319490639053_446661_23172
+  Count: 21
+  First Element: name=Filter for TMT Reqs, type=CallBehaviorAction, id=_17_0_2_3_b4c02e1_1386864841761_822073_106770
+Stereotype: _17_0_2_3_eac0346_1374702066208_763130_29330
+  Count: 15
+  First Element: name=Requirement Text, type=CallBehaviorAction, id=_17_0_2_3_b4c02e1_1381870149347_783713_44084
+Stereotype: _9_0_2_91a0295_1110467285765_674988_0
+  Count: 34
+  First Element: name=Ta, type=Property, id=_18_0_6_876026b_1492377294024_399522_180221
+Stereotype: _17_0_1_22b603cd_1319577320837_597116_24044
+  Count: 13
+  First Element: name=Collect Relevant Objects, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580864844067_769704_4496
+Stereotype: _12_0EAPbeta_be00301_1161355503976_51059_459
+  Count: 89
+  First Element: name=V_0, type=Port, id=_18_0_5_baa02e2_1457644870920_982694_162686
+Stereotype: _11_5EAPbeta_be00301_1147937772815_210871_2448
+  Count: 9
+  First Element: name=Calibrations Duration Scenario, type=Interaction, id=_18_0_6_c0402fd_1490376054712_706492_183218
+Stereotype: _15_0_be00301_1204738438075_92104_1078
+  Count: 4
+  First Element: name=pITDataConsumerIF, type=Property, id=_18_0_4_baa02e2_1440709136123_300349_150419
+Stereotype: _16_8beta_8f90291_1257409433754_907450_344
+  Count: 21
+  First Element: name=Owner of Signal Send, type=Property, id=_18_0_4_baa02e2_1440718128246_542073_160096
+Stereotype: magicdraw_1046861421226_625103_15
+  Count: 2
+  First Element: name=TMT Mission, type=Model, id=_18_0_5_baa02e2_1457920149035_827082_159583
+Stereotype: _16_8beta_9020291_1260453936960_387965_1187
+  Count: 5
+  First Element: name=Mission Simulation Activity Tree, type=Diagram, id=_18_0_3_baa02e2_1431449437033_982320_144858
+Stereotype: _9_0_be00301_1108044721245_236588_411
+  Count: 6
+  First Element: name=VCRM Agreement Status, type=Property, id=_17_0_2_3_b4c02e1_1384207865322_886193_137696
+Stereotype: _17_0_1_244d03ea_1319490805237_397889_23292
+  Count: 32
+  First Element: name=Collect Owned Elements, type=CallBehaviorAction, id=_18_0_5_c0402fd_1460410767822_55095_147078
+Stereotype: _16_0_8f90291_1226333658930_538281_247
+  Count: 7
+  First Element: name=APS Power Roll-up, type=Component, id=_18_0_5_baa02e2_1461986926069_786771_149199
+Stereotype: _17_0beta_e9b034a_1286943326500_993621_1821
+  Count: 7
+  First Element: name=APS Power Roll-up, type=Component, id=_18_0_5_baa02e2_1461986926069_786771_149199
+Stereotype: _17_0_1_244d03ea_1319490675924_494597_23220
+  Count: 4
+  First Element: name=Get the Problems, type=CallBehaviorAction, id=_17_0_2_3_b4c02e1_1386864841865_264246_106809
+Stereotype: _16_5beta1_8ba0276_1232443673758_573873_267
+  Count: 32
+  First Element: name=Problem Simulation, type=Diagram, id=_18_0_2_baa02e2_1430574585360_130120_231074
+Stereotype: _17_0_1_407019f_1332453225141_893756_11936
+  Count: 7
+  First Element: name=L3 Empty Requirements, type=Class, id=_18_0_2_b4c02e1_1443727863906_58650_188905
+Stereotype: _17_0_2_3_e9f034d_1375474838719_217024_29345
+  Count: 96
+  First Element: name=Time, type=CallBehaviorAction, id=_17_0_2_3_41e01aa_1398322049085_688043_62154
+Stereotype: _17_0_3_85f027d_1362349793845_681432_2986
+  Count: 9
+  First Element: name=OPSRD, type=Diagram, id=_043ae4c1-3945-4e1a-85b0-7cf65d1c87be_specificationLogTable
+Stereotype: _16_9_136f03d9_1308039776046_675494_2494
+  Count: 4
+  First Element: name=Test Gen, type=Class, id=_18_0_5_baa02e2_1457644848057_489727_162248
+Stereotype: _9_0_be00301_1108044705753_203399_228
+  Count: 9
+  First Element: name=Sample Requirements Diagram, type=Diagram, id=_17_0_2_3_b4c02e1_1376516516344_956903_36645
+Stereotype: _17_0_2beta_1_8ba0276_1328170763457_888031_1701
+  Count: 1
+  First Element: name=Derived Properties, type=Package, id=_17_0_2_3_b4c02e1_1386876001157_121067_61921
+Stereotype: _17_0_1_244d03ea_1319493358406_722608_25065
+  Count: 4
+  First Element: name=Requirement Diagrams, type=Activity, id=_18_0_3_baa02e2_1431550187535_169917_142931
+Stereotype: _17_0_136f03d9_1298882007750_90885_2312
+  Count: 10
+  First Element: name=Summit Facilities, type=Class, id=_18_0_5_baa02e2_1461990286301_636439_174117
+Stereotype: _17_0_2_3_407019f_1377878750778_198079_29401
+  Count: 13
+  First Element: name=Sort by Attributes, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580860317675_445427_2058
+Stereotype: _11_5EAPbeta_be00301_1147430310770_313444_1322
+  Count: 2
+  First Element: name=micrometer, type=InstanceSpecification, id=_17_0_2_3_41e01aa_1379087749840_278972_43333
+Stereotype: _11_5EAPbeta_be00301_1147430329106_6539_1367
+  Count: 1
+  First Element: name=km/hr, type=InstanceSpecification, id=_18_0_6_b4c02e1_1476893891014_561490_279825
+Stereotype: _17_0_4_85f027d_1370205436501_615850_3778
+  Count: 9
+  First Element: name=DRD APS, type=Package, id=_2ca33d85-e793-40fa-9f3a-b3c90e37fd87
+Stereotype: _18_0_2_b4c02e1_1422576771460_343434_83862
+  Count: 9
+  First Element: name=DRD APS, type=Package, id=_2ca33d85-e793-40fa-9f3a-b3c90e37fd87
+Stereotype: _17_0_1_244d03ea_1319492675769_542703_24690
+  Count: 8
+  First Element: name=Get the BDDs, type=Activity, id=_17_0_2_3_897027c_1378831661728_505503_36208
+Stereotype: _18_0_2_876026b_1427585624274_597977_136314
+  Count: 6
+  First Element: name=M1CS Engineering Interface, type=Class, id=_18_0_2_876026b_1426470179994_654158_128927
+Stereotype: _17_0_1_244d03ea_1319496280368_246829_25514
+  Count: 2
+  First Element: name=Date, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580176750947_817916_294837
+Stereotype: _17_0_2beta_903028d_1330931963978_770627_1918
+  Count: 2
+  First Element: name=Component, type=Constraint, id=_17_0_2_3_897027c_1379617466571_762947_42777_migrated
+Stereotype: _17_0_1_244d03ea_1319496302084_771803_25570
+  Count: 14
+  First Element: name=Display as Image, type=CallBehaviorAction, id=_19_0_3_c0402fd_1580950185775_995835_8635
+Stereotype: _16_6beta_bb002ea_1245402130171_170238_5692
+  Count: 8
+  First Element: name=Table of L2 APS Requirements: All, type=Diagram, id=_17_0_2_3_b4c02e1_1384210024251_366433_138924
+Stereotype: _18_0_5_baa02e2_1457644747835_681582_161742
+  Count: 1
+  First Element: name=Location, type=Property, id=_18_0_5_baa02e2_1457644751035_289171_161770
+Stereotype: _18_0_2_876026b_1427584899086_303202_136219
+  Count: 1
+  First Element: name=Automations Module, type=Class, id=_18_0_2_876026b_1427925858271_145736_136346
+Stereotype: _18_0_3_1b1a0481_1426153747816_695881_5404
+  Count: 3
+  First Element: name=PEAS state, type=Class, id=_18_0_5_baa02e2_1461990581099_572979_175128
+Stereotype: _17_0_5beta_17530432_1382596103711_316615_13367
+  Count: 2
+  First Element: name=PIT Tracking, type=Property, id=_18_0_4_baa02e2_1440712585397_416412_155247
+Stereotype: _17_0_5beta_17530432_1382595829800_90522_13318
+  Count: 1
+  First Element: name=Acquiring_do, type=Property, id=_18_0_4_baa02e2_1441911245263_223659_150782
+Stereotype: _18_5_3_8bf0285_1520469040211_2821_15754
+  Count: 3
+  First Element: name=TMT-SE, type=Package, id=_18_0_5_c0402fd_1468273748052_698417_176773
+Stereotype: _17_0_2beta_903028d_1330931963982_116619_1920
+  Count: 1
+  First Element: name=M1CS Legend, type=Class, id=_17_0_2_3_897027c_1379617466569_869891_42773
+Stereotype: _12_1_8f90291_1173963323875_662612_98
+  Count: 3
+  First Element: name=ReqIF Properties Profile, type=Profile, id=_18_0_2_b4c02e1_1422576771459_420105_83860
+Stereotype: _18_0beta_8ae027d_1393234161183_529611_71207
+  Count: 1
+  First Element: name=M2S, type=Class, id=_18_0_5_f1d0357_1462834241366_908904_148886
+Stereotype: _17_0_5_407019f_1350499061979_318549_11937
+  Count: 1
+  First Element: name=TMT, type=Class, id=_17_0_2_3_897027c_1378338986465_307262_37033
+Stereotype: _17_0_2_3_407019f_1383165357327_898985_29071
+  Count: 1
+  First Element: name=Data, type=Model, id=PROJECT-d94630c2-576c-4edd-a8cd-ae3ecd25d16c_pm
+Stereotype: _17_0_3beta_8e10289_1348753189236_873942_2915
+  Count: 4
+  First Element: name=L3 APT to L2 APS Requirement Mapping, type=Diagram, id=_18_0_2_b4c02e1_1443121861196_726974_179726
+Stereotype: _17_0_3beta_8e10289_1348753189306_38038_3061
+  Count: 4
+  First Element: name=L3 APT to L2 APS Requirement Mapping, type=Diagram, id=_18_0_2_b4c02e1_1443121861196_726974_179726
+Stereotype: _18_0_5_baa02e2_1457644747835_493714_161743
+  Count: 1
+  First Element: name=Stress, type=Property, id=_18_0_5_baa02e2_1457644751035_872055_161771
+Stereotype: _18_0_5_baa02e2_1457644747833_323583_161740
+  Count: 1
+  First Element: name=Stress Field, type=Property, id=_18_0_5_baa02e2_1457644751034_461599_161768
+Stereotype: _17_0_2_3_407019f_1390932205525_919663_29081
+  Count: 1
+  First Element: name=TMT ICD: APS to M1CS (DRAFT), type=Class, id=_18_0_2_b4c02e1_1427751647437_858848_130625
+Stereotype: magicdraw_1046861421236_236598_27
+  Count: 37
+  First Element: name=View, type=Operation, id=_19_0_2_c0402fd_1571333946997_928902_4773
+Stereotype: _17_0_1_2_8c20286_1339091178652_692897_26954
+  Count: 2
+  First Element: name=ICD Extraction Method, type=Activity, id=_18_5_3_c0402fd_1526688162128_738345_20937
+Stereotype: _17_0_2_3_e81034b_1378849355455_639118_29417
+  Count: 3
+  First Element: name=Relevant Connectors for both ChildA and ChildB, type=CallBehaviorAction, id=_18_5_3_c0402fd_1526687903183_118008_20787

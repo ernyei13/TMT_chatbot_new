@@ -1,0 +1,350 @@
+[
+  {
+    "id": "TC-1",
+    "category": "Model Query Examples",
+    "question": "Which physical components implement REQ-1-OAD-1149?",
+    "expected_answer": "The NFIRAOS system and the Laser Guide Star Facility (LGSF) implement REQ-1-OAD-1149 by enabling diffraction-limited near-IR observations with adaptive optics.",
+    "keywords": [
+      "NFIRAOS",
+      "LGSF",
+      "REQ-1-OAD-1149", 
+      "physical components",
+      "adaptive optics",
+      "near-IR observations"
+    ],
+    "model elements": "id"
+  },
+  {
+    "id": "TC-2",
+    "category": "Model Query Examples",
+    "question": "Which physical components implement Req-1-OAD-8015?",
+    "expected_answer": "The Telescope Optical Feedback System (TOFS) implements Req-1-OAD-8015.",
+    "keywords": [
+      "Telescope Optical Feedback System",
+      "TOFS",
+      "REQ-1-OAD-8015",
+      "physical components",
+      "implementation"
+    ]
+  },
+  {
+    "id": "TC-3",
+    "category": "Model Query Examples",
+    "question": "What other components are required for NFIRAOS to function?",
+    "expected_answer": "NFIRAOS depends on the Real-Time Controller, the Laser Guide Star Facility (LGSF), and calibration sources to operate effectively.",
+    "keywords": [
+      "NFIRAOS",
+      "Real-Time Controller",
+      "LGSF",
+      "calibration sources",
+      "dependencies",
+      "system operation"
+    ]
+  },
+  {
+    "id": "TC-4",
+    "category": "Model Query Examples",
+    "question": "What other components are required for the APS to function?",
+    "expected_answer": "The APS requires interfaces and components such as the Variable Temperature Cooling Water interface with STR, and various optical and control components (e.g., Pupil Mask, Tip/Tilt Plate, motors).",
+    "keywords": [
+      "APS",
+      "components",
+      "requirements",
+      "interfaces",
+      "cooling water",
+      "optical components",
+      "Pupil Mask",
+      "Tip/Tilt Plate",
+      "motors"
+    ]
+  },
+  {
+    "id": "TC-5",
+    "category": "Model Query Examples",
+    "question": "What is the operating principle of the WFOS subsystem?",
+    "expected_answer": "WFOS operates as a seeing-limited multi-object spectrometer covering the 0.31–1.0 µm range, utilizing red and blue channels with multiple slit configurations.",
+    "keywords": [
+      "WFOS",
+      "operating principle",
+      "multi-object spectrometer",
+      "seeing-limited",
+      "wavelength range",
+      "slit configurations",
+      "channels"
+    ]
+  },
+  {
+    "id": "TC-6",
+    "category": "Model Query Examples",
+    "question": "What is the operating principle of the M1 Global Tip/Tilt - Operations?",
+    "expected_answer": "The M1 Global Tip/Tilt - Operations functions within the context of alignment procedures for the telescope.",
+    "keywords": [
+      "M1",
+      "Global Tip/Tilt",
+      "Operations",
+      "alignment",
+      "telescope",
+      "primary mirror",
+      "adjustment"
+    ]
+  },
+  {
+    "id": "TC-7",
+    "category": "Model Query Examples",
+    "question": "Why is the NFIRAOS–IRIS communication link important in terms of functionality?",
+    "expected_answer": "This link enables real-time coordination between adaptive optics corrections from NFIRAOS and image acquisition in IRIS, ensuring optimal image quality and alignment.",
+    "keywords": [
+      "NFIRAOS",
+      "IRIS",
+      "communication link",
+      "real-time coordination",
+      "adaptive optics",
+      "image acquisition",
+      "image quality"
+    ]
+  },
+  {
+    "id": "TC-8",
+    "category": "Model Query Examples",
+    "question": "What timing constraints apply to the IRIS instrument?",
+    "expected_answer": "IRIS must complete science target acquisition and AO configuration within the 5-minute telescope slewing budget to enable efficient observation scheduling.",
+    "keywords": [
+      "IRIS",
+      "timing constraints",
+      "target acquisition",
+      "AO configuration",
+      "telescope slewing",
+      "observation scheduling",
+      "efficiency"
+    ]
+  },
+  {
+    "id": "TC-9",
+    "category": "Model Query Examples",
+    "question": "What timing constraints apply to the APS subsystem?",
+    "expected_answer": "The APS subsystem has timing constraints, for example, on-axis alignment should be performed in less than 120 minutes.",
+    "keywords": [
+      "APS",
+      "timing constraints",
+      "on-axis alignment",
+      "duration",
+      "performance",
+      "efficiency",
+      "time budget"
+    ]
+  },
+  {
+    "id": "TC-10",
+    "category": "Model Quality & Maintenance",
+    "question": "Which part of the model is incomplete and needs further specification?",
+    "expected_answer": "The communication interface between the Executive Software and the APS subsystem lacks detailed event handling and state synchronization definitions.",
+    "keywords": [
+      "incomplete model",
+      "Executive Software",
+      "APS subsystem",
+      "communication interface",
+      "event handling",
+      "state synchronization",
+      "specifications"
+    ]
+  },
+  {
+    "id": "TC-11",
+    "category": "Model Quality & Maintenance",
+    "question": "Which part of the model requires further specification?",
+    "expected_answer": "The documents indicate areas where further specification is needed, such as electromagnetic radiation emission requirements.",
+    "keywords": [
+      "model",
+      "specification requirements",
+      "electromagnetic radiation",
+      "emissions",
+      "incomplete documentation",
+      "regulatory compliance"
+    ]
+  },
+  {
+    "id": "TC-12",
+    "category": "Model Quality & Maintenance",
+    "question": "Which part of the model is of low quality, where methodological errors were made and should be improved?",
+    "expected_answer": "The APS alignment control state machine includes redundant transitions and lacks consistency in handling segment exchange operations.",
+    "keywords": [
+      "APS",
+      "alignment control",
+      "state machine",
+      "redundant transitions",
+      "segment exchange",
+      "consistency issues",
+      "methodological errors"
+    ]
+  },
+  {
+    "id": "TC-13",
+    "category": "Knowledge Extraction & Design Support",
+    "question": "I'm looking for the component that performs wavefront correction computations.",
+    "expected_answer": "The Real-Time Controller within NFIRAOS is responsible for computing wavefront corrections based on sensor data from the wavefront sensors.",
+    "keywords": [
+      "wavefront correction",
+      "computations",
+      "Real-Time Controller",
+      "NFIRAOS",
+      "sensor data",
+      "wavefront sensors",
+      "adaptive optics"
+    ]
+  },
+  {
+    "id": "TC-14",
+    "category": "Knowledge Extraction & Design Support",
+    "question": "Suggest a modeling approach for the MODHIS component.",
+    "expected_answer": "Use a block definition diagram to represent MODHIS with input ports for diffraction-limited light, control signals for fiber injection, and internal behavior for high-resolution spectral analysis.",
+    "keywords": [
+      "MODHIS",
+      "modeling approach",
+      "block definition diagram",
+      "diffraction-limited light",
+      "fiber injection",
+      "spectral analysis",
+      "system design"
+    ]
+  },
+  {
+    "id": "TC-15",
+    "category": "Knowledge Extraction & Design Support",
+    "question": "Suggest a modeling approach for a telescope component.",
+    "expected_answer": "The documents use modeling approaches like use cases, activity diagrams, and state machines to model components and system behavior. A suitable approach would depend on the specific nature of the component and its interactions.",
+    "keywords": [
+      "modeling approach",
+      "telescope component",
+      "use cases",
+      "activity diagrams",
+      "state machines",
+      "system behavior",
+      "component interactions"
+    ]
+  },
+  {
+    "id": "TC-16",
+    "category": "Knowledge Extraction & Design Support",
+    "question": "Describe the key information about the APS component for onboarding purposes.",
+    "expected_answer": "APS aligns and phases M1 segments using multiple sensors and phasing cameras, supporting operations like post-exchange alignment, maintenance, and rigid body calibration.",
+    "keywords": [
+      "APS",
+      "onboarding",
+      "M1 segments",
+      "sensors",
+      "phasing cameras",
+      "post-exchange alignment",
+      "maintenance",
+      "calibration"
+    ]
+  },
+  {
+    "id": "TC-17",
+    "category": "Knowledge Extraction & Design Support",
+    "question": "Why was the Alignment and Phasing System (APS) designed this way?",
+    "expected_answer": "APS was designed with modular sensing and feedback control to support fast segment phasing, optical calibration, and operational reuse after mirror exchange events.",
+    "keywords": [
+      "APS",
+      "design rationale",
+      "modular sensing",
+      "feedback control",
+      "segment phasing",
+      "optical calibration",
+      "mirror exchange"
+    ]
+  },
+  {
+    "id": "TC-18",
+    "category": "System Behavior & Validation",
+    "question": "How does telemetry data flow through the model from NFIRAOS?",
+    "expected_answer": "NFIRAOS telemetry is processed by the Real-Time Controller and routed to the Executive Software for logging and visualization via the common software event bus.",
+    "keywords": [
+      "telemetry data",
+      "NFIRAOS",
+      "data flow",
+      "Real-Time Controller",
+      "Executive Software",
+      "logging",
+      "visualization",
+      "event bus"
+    ]
+  },
+  {
+    "id": "TC-19",
+    "category": "System Behavior & Validation",
+    "question": "How does data flow through the control system model?",
+    "expected_answer": "Data flow depends on the specific data type. The documents describe data flow in the context of control systems, observation workflows, and APS operations. For example, the Executive Software receives commands and sends commands to the TCS.",
+    "keywords": [
+      "data flow",
+      "control system",
+      "observation workflows",
+      "APS operations",
+      "Executive Software",
+      "TCS",
+      "command processing"
+    ]
+  },
+  {
+    "id": "TC-20",
+    "category": "System Behavior & Validation",
+    "question": "Is there a single point of failure in the TMT adaptive optics system?",
+    "expected_answer": "Yes, the Real-Time Controller in NFIRAOS is a critical component whose failure would disable adaptive optics corrections for IRIS and MODHIS.",
+    "keywords": [
+      "single point of failure",
+      "TMT",
+      "adaptive optics",
+      "Real-Time Controller",
+      "NFIRAOS",
+      "IRIS",
+      "MODHIS",
+      "system reliability"
+    ]
+  },
+  {
+    "id": "TC-21",
+    "category": "System Behavior & Validation",
+    "question": "Does the WFOS component in the model comply with the following specification: R ≥ 5000 with 0.75\" slits?",
+    "expected_answer": "No, WFOS achieves R = 1500 and 3500 with 0.75\" slits; higher resolution requires narrower slits than specified.",
+    "keywords": [
+      "WFOS",
+      "compliance",
+      "specification",
+      "resolution",
+      "slits",
+      "R-value",
+      "spectral resolution"
+    ]
+  },
+  {
+    "id": "TC-22",
+    "category": "System Behavior & Validation",
+    "question": "The client gave the following feedback — 'Phasing after mirror segment exchange is too slow' — please provide development suggestions.",
+    "expected_answer": "Optimize APS segment acquisition sequences, parallelize wavefront sensing tasks, and reduce initialization latency with precomputed lookup tables.",
+    "keywords": [
+      "client feedback",
+      "phasing",
+      "mirror segment exchange",
+      "performance optimization",
+      "segment acquisition",
+      "wavefront sensing",
+      "initialization latency",
+      "lookup tables"
+    ]
+  },
+  {
+    "id": "TC-23",
+    "category": "System Behavior & Validation",
+    "question": "Are there duplicate elements in the model?",
+    "expected_answer": "Yes, the NFIRAOS calibration module appears twice—once under AO Control and once under Calibration Sources—leading to potential confusion in system configuration.",
+    "keywords": [
+      "duplicate elements",
+      "model redundancy",
+      "NFIRAOS",
+      "calibration module",
+      "AO Control",
+      "Calibration Sources",
+      "system configuration",
+      "model consistency"
+    ]
+  }
+]
