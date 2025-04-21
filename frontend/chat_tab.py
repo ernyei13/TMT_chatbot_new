@@ -125,11 +125,14 @@ def render_chat_tab() -> None:
             progress_log = st.container()
             settings = {
                 "enable_planner_agent": st.session_state.get("enable_planner_agent", False),
+                
                 "enable_reviewer_agent": st.session_state.get("enable_reviewer_agent", False),
                 
                 "max_retry_reviewer": st.session_state.get("max_retry_reviewer", 1),
+
                 "max_retry_sysml_filter": st.session_state.get("max_retry_sysml_filter", 8),
-                "max_rag": st.session_state.get("max_retry_rag_filter", 8),
+
+                "max_rag": st.session_state.get("max_rag", 8),
 
             }
             try:

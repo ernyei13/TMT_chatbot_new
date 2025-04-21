@@ -32,7 +32,8 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
     sysml_retry_num = settings.get("sysml_retry_num", 8)
     sysml_query_agent = make_query_builder_agent(elements, sysml_retry_num)
 
-    rag_max_documents = settings.get("rag_max_documents", 5)
+    rag_max_documents = settings.get("max_rag", 5)
+    print(f"[RAG] max documents: {rag_max_documents}")
     
     rag_agent = make_rag_agent(
         lambda q: retrieve_text_from_azure_search(q, 0, rag_max_documents, True, True) 
@@ -78,7 +79,7 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
         graph.add_node("set_retry_count", set_retry_count)
         graph.set_entry_point("set_retry_count")
         graph.add_edge("set_retry_count", "sysml_query_agent")
-        
+
     graph.add_node("sysml_query_agent", sysml_query_agent)
     graph.add_node("rag_agent", rag_agent)
     graph.add_node("diagram_retriever", diagram_retriever_node)

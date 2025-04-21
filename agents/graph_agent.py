@@ -168,7 +168,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
                     break
 
                 if len(results) == 0:
-                    retry_reason = "No elements matched the query. Try again a less restricting broader filter. If havent tried yet, try filter to the name. Try only one filter!"
+                    retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name or type. Try less filters."
                     print("No elements matched the query.")
                 else:
                     retry_reason = f"Too many elements matched the query. Try again with more specific filters."
