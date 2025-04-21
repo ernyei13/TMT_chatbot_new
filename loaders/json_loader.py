@@ -146,7 +146,7 @@ def load_elements():
 
     # Use absolute path based on current file's location
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    response_path = os.path.join(current_dir, "elements.json")
+    response_path = os.path.join(current_dir, "response.json")
 
     try:
         with open(response_path, "r") as f:

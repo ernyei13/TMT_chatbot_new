@@ -1,8 +1,16 @@
 import os
 
+
 def diagram_retriever(state: dict) -> dict:
     model_elements = state.get("model_query_result", [])
-    diagrams_path = "/Users/zoltanernyei/Documents/BME/szakdoga/clean_code_python/diagrams"
+    base_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
+    )
+    diagrams_path = os.path.join(base_dir, "diagrams")
+    if not os.path.isdir(diagrams_path):
+        raise FileNotFoundError(f"No such directory: {diagrams_path}")
+
+
     existing_diagrams = os.listdir(diagrams_path)
     try:
         related_diagrams = []
