@@ -162,13 +162,12 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
                         if element.id == results[0]["id"]:
                             results = element.serialize(max_depth=1)
                             break
-                    #TODO: FIX SERIALIZER 
 
                 if len(results) != 0 or result_char_len >= max_results_length:
                     break
 
                 if len(results) == 0:
-                    retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name or type. Try less filters."
+                    retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name. Try less filters. Do not try the same filter again. Try only one."
                     print("No elements matched the query.")
                 else:
                     retry_reason = f"Too many elements matched the query. Try again with more specific filters."
@@ -197,12 +196,22 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 
         print("number of retrieved model elements:", len(results))
         #print how many elements actually sent
+        elements_new = state.get("model_query_result")
+        for r in results:
+            try:
+                elements_new[r["id"]] = r
+            except Exception as e:
+                print("Failed to add element to the list, only including the newly found element", e)
+                elements_new = results
+                continue
+
 
         return {
+            **state,
             "messages": state["messages"] + [
                 AIMessage(content="model_query_result is filled"),
             ],
-            "model_query_result": results
+            "model_query_result": elements_new,
         }
 
     return RunnableLambda(_agent)

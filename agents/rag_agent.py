@@ -49,13 +49,22 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         question = q
      
         # Retrieve context chunks for the question
+        if state.get("question_for_rag") is not None:
+            question = state["question_for_rag"]
+
         context_chunks = retriever_fn(question)
+        context = state.get("context")
+        if context is not None:
+            context.append(context_chunks)
         context = context_chunks
+        if state.get("question_for_rag") is not None:
+            question_refined = state["question_for_rag"]
+            print(f"[RAG] qestion for rag: {question_refined}")
         print(f"[RAG] query: {question}")
 
         # Build the prompt
         prompt = ChatPromptTemplate.from_template(
-            "{system_prompt}\n\nContext:\n{context}\n\nQuestion: {question}"
+            "{system_prompt}\n\nContext:\n{context}\n\nQuestion: {question} "
         )
 
         chain = (
@@ -75,12 +84,12 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         answer = chain.invoke({
             "system_prompt": system_prompt,
             "context": context,
-            "question": question
+            "question": question,
         })
 
         return {
             **state,  # Keep everything from the original state
-            "rag_context": context,
+            "rag_context": context ,
             "rag_agent_result": answer,
             "messages": messages + [AIMessage(content=answer)]
         }

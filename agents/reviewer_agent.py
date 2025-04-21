@@ -21,24 +21,24 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     - call: str | None
     """
     prompt_text = (
-        "You are a reviewer. Evaluate if the AI-generated answer fully addresses the user's question. "
+        "You are a reviewer. Evaluate if the AI-generated answer fully addresses the user's question. The questions are about a telescope project. Called TMT.\n"
         "Return a JSON object with keys:\n"
         "  - complete (true/false)\n"
         "  - answer (your feedback or final answer)\n"
-        "  - call (\"sysml_query_agent\" if model data is missing, "
-        " \"rag_agent\" if context is missing, or null)"
+        "  - call ( choose an agent to call next from ['sysml_query_agent', 'rag_agent']) only call final if the answer is flawless\n"
+        "  - question_for_rag  if you want to call the rag agent specify a better question to retrieve context\n"
+        "  - question_for_model if you want to use the sysml_query_agent give it a better quesiton to retrieve the required elements\n"
     )
 
     system_message = SystemMessage(content=prompt_text)
     def _reviewer(state: dict) -> dict:
-        print(f"[REVIEWER] State: {state}")
-        print(f"[REVIEWER] System message: {state['retry_count']}")
+       # print(f"[REVIEWER] State: {state}")
+        print(f"[REVIEWER] Retry count: {state['retry_count']}")
 
         reviews = state['retry_count']
         if reviews >= max_reviews:
             return {
                 **state,
-                'final_answer': 'Reviewer limit reached.',
                 'complete': True,
                 'call': None,
                 'messages': state.get('messages', []),
@@ -70,24 +70,25 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
         )
         raw = chain.invoke({})
         try:
-            if raw.strip().startswith('```'):
-                raw = raw.strip('`\n')
-            parsed = json.loads(raw)
-            print(f"[REVIEWER] Parsed JSON: {parsed}")
+            # strip and parse
+            raw_txt = raw.strip().lstrip("```json").rstrip("```").strip()
+            parsed = json.loads(raw_txt)
+            print(f"[REVIEWER] parsed: {parsed}")
         except json.JSONDecodeError:
-            parsed = {'complete': True,
-                      'answer': 'Reviewer parsing error.',
-                      'call': None}
+            parsed = {"complete": True, "answer": "Reviewer parsing error.", "call": None}
+        call = parsed.get("call")
 
-        # Append reviewer feedback and increment counter
-        new_msgs = state.get('messages', []) + [AIMessage(content=parsed['answer'])]
+
+        new_msgs = state.get("messages", []) + [AIMessage(content=parsed["answer"])]
+
+        print(f"[REVIEWER] Parsed next to call: {call}")
+
         return {
             **state,
-            'final_answer': parsed['answer'],
-            'complete': parsed.get('complete', False),
-            'call': parsed.get('call'),
-            'messages': new_msgs,
-            'retry_count': reviews + 1,
+            "complete": parsed.get("complete", False),
+            "messages": new_msgs,
+            "retry_count": state.get("retry_count", 0) + 1,
+            "call": call,
         }
 
     return RunnableLambda(_reviewer)

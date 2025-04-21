@@ -34,6 +34,7 @@ class Summarizer:
 
 
 
+
         self.prompt_template = """
             You are an expert assistant who understands SysML models. You have access to information about elements in a SysML model and context from TMT project documentation.
 
@@ -52,6 +53,23 @@ class Summarizer:
 
             Provide a detailed yet understandable summary of the findings. With concretes examples and references to the model elements and documentation.
         """
+    def __call__(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        model_query_result = inputs.get("model_query_result")
+        rag_result = inputs.get("rag_agent_result")
+        diagrams = inputs.get("diagrams", [])
+
+        # Generate the final summary
+        answer = self.summarize_responses(model_query_result, rag_result, diagrams)
+        content = answer.content if hasattr(answer, "content") else answer
+        ai_message = AIMessage(content=content)
+
+        return {
+            **inputs,
+            "messages": inputs.get("messages", []) + [ai_message],
+            "final_answer": content,
+            "complete": False,       # defer to reviewer
+            "call": "reviewer",      # route next to reviewer agent
+        }
 
     def generate_graph(self, elements: List[Dict[str, Any]]) -> str:
         # Create a simple graph of related elements

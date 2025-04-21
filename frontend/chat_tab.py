@@ -48,10 +48,11 @@ def render_chat_tab() -> None:
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "assistant", "content":
-             "Hello! How can I help you understand the SysML model today?"}
+             "Hello! How can I help you understand the TMT model today?"}
         ]
 
     # Display existing chat messages
+    
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             content = message["content"]
@@ -115,8 +116,32 @@ def render_chat_tab() -> None:
                         st.caption("No associated diagrams found.")
 
     # Handle user input
-    if prompt := st.chat_input("Ask about the SysML model..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
+    # Example questions as buttons above the input
+    # Example questions as buttons
+    
+    if not st.session_state.get("followup_q"):
+        example_questions =  [
+            "What packages are in the model?",
+            "What is the significance of the APS?",
+            "What requirements are related to the APS?",
+        ]
+    else:
+        example_questions = st.session_state["followup_q"]
+        
+        
+    cols = st.columns(len(example_questions))
+    q = None
+    for col, question in zip(cols, example_questions):
+        if col.button(question, key=question):
+            q = question
+
+    if prompt := st.chat_input("Ask about the TMT...") or q:
+
+        if prompt:
+            st.session_state.messages.append({"role": "user", "content": prompt})
+        if st.session_state.get("user_question"):
+            st.session_state.messages.append({"role": "user", "content": st.session_state.get("user_question")})
+
         with st.chat_message("user"):
             st.markdown(prompt)
         with st.chat_message("assistant"):
@@ -150,13 +175,19 @@ def render_chat_tab() -> None:
                     "final_answer": agent_response.get("final_answer", "Error: no answer."),
                     "rag_context": agent_response.get("rag_context", []),
                     "model_query_result": agent_response.get("model_query_result", []),
-                    "diagrams": agent_response.get("diagrams", [])
+                    "diagrams": agent_response.get("diagrams", []),
+                    "followup_q": agent_response.get("followup_q", None)
                 }
+                st.session_state.followup_q = agent_response.get("followup_q", None)
+                print(f"Followup question: {st.session_state.followup_q}")
+                
+
                 placeholder.empty()
                 # Display structured response
                 st.markdown("**Final Answer:**")
                 st.markdown(assistant_response_data["final_answer"])
                 st.write("---")
+                
                 if show_context:
                     st.markdown("**📚 Documentation Context Used:**")
                     for i, chunk in enumerate(assistant_response_data["rag_context"]):
@@ -190,6 +221,8 @@ def render_chat_tab() -> None:
                             else:
                                 st.warning(f"Not found: {path}")
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response_data})
+                st.rerun()
+
             except Exception as e:
                 placeholder.empty()
                 st.error(f"An error occurred: {e}")

@@ -46,7 +46,7 @@ def make_planner_agent() -> RunnableLambda:
     Always pass the user's question to both agents if unsure.
     """
 
-    def _planner() -> RunnableLambda:
+    def _planner(state: Dict[str, Any]) -> Dict[str, Any]:
         question = next((m.content for m in reversed(state.get("messages", [])) if isinstance(m, HumanMessage)), "")
         print(f"[PLANNER] User question: {question}")
 
