@@ -16,14 +16,18 @@ from eval_tab import render_eval_tab
 import streamlit as st
 
 # --- Login screen ---
+# load credentials from Streamlit secrets
+TMT_USERNAME = st.secrets["TMT_USERNAME"]
+TMT_PASSWORD = st.secrets["TMT_PASSWORD"]
+
 if "logged_in" not in st.session_state:
     st.title("Please log in")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if username == "tmtaccount" and password == "tmtadmin":
+        if username == TMT_USERNAME and password == TMT_PASSWORD:
             st.session_state.logged_in = True
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("❌ Invalid credentials")
     st.stop()
