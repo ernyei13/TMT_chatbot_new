@@ -124,6 +124,7 @@ def render_chat_tab() -> None:
             "What packages are in the model?",
             "What is the significance of the APS?",
             "What requirements are related to the APS?",
+            "What is the Asterism Generator?",
         ]
     else:
         example_questions = st.session_state["followup_q"]
