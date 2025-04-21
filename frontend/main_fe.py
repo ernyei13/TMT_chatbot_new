@@ -37,7 +37,7 @@ st.set_page_config(page_title="TMT Toolkit", layout="centered", initial_sidebar_
 st.title("TMT Engineering Assistant")
 st.expander(":red[IMPORTANT DISCLAMER]", expanded=False).markdown(
     """
-    - The chatbot can answer questions about the TMT documentation and Sysml model elements.
+    - The chatbot can answer questions about the TMT documentation and SysML model elements.
     - NO GUARDRAILS ARE RESTRICTING THE SYSTEM. PLEASE ACT ACCORDINGLY AND NOT TRY TO BREAK IT.
     - There is no memory of the conversation, so each question is treated **independently**.
 
