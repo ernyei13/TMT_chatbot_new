@@ -1,35 +1,54 @@
 import os
+from typing import Any, Dict, List
 
 
-def diagram_retriever(state: dict) -> dict:
-    model_elements = state.get("model_query_result", [])
+def diagram_retriever(state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Attach any .svg files whose filenames contain an element 'id'
+    from state["model_query_result"].
+    """
+    raw = state.get('model_query_result', {})
+    if isinstance(raw, dict):
+        # handle dict-of-id->element or single element dict
+        if 'id' in raw:
+            model_elements = [raw]
+            print("[DIAGRAM RETRIEVER] Found single element")
+            print(model_elements)
+        else:
+            model_elements = list(raw.values())
+            print("[DIAGRAM RETRIEVER] Found multiple elements")
+            print(model_elements)
+    elif isinstance(raw, list):
+        model_elements = raw
+        print("[DIAGRAM RETRIEVER] Found list of elements")
+        print(model_elements)
+    else:
+        model_elements = []
+
     base_dir = os.path.abspath(
         os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     )
-    diagrams_path = os.path.join(base_dir, "diagrams")
-    if not os.path.isdir(diagrams_path):
-        raise FileNotFoundError(f"No such directory: {diagrams_path}")
+    diagrams_dir = os.path.join(base_dir, "diagrams")
+    if not os.path.isdir(diagrams_dir):
+        raise FileNotFoundError(f"Directory not found: {diagrams_dir}")
 
+    svg_files = [
+        fname for fname in os.listdir(diagrams_dir)
+        if fname.lower().endswith(".svg")
+    ]
 
-    existing_diagrams = os.listdir(diagrams_path)
-    try:
-        related_diagrams = []
-        for el in model_elements:
-            el_id = el.get("id")
-            if any(f"{el_id}{ext}" in existing_diagrams for ext in ["", ".svg"]):
-                related_diagrams.append(el_id)
-        print(f"Related diagrams: {related_diagrams}")
-    #catch all exceptions:
-    except AttributeError:
-        print("KeyError: 'id' not found in model elements")
-        related_diagrams = []
-        return {
-            **state,
-            "diagrams": [],
-        }
-    
+    related: List[str] = []
+    for element in model_elements:
+        print(f"Element: {element}")
+        if not isinstance(element, dict):
+            continue
+        el_id = element.get("id")
+        if not isinstance(el_id, str):
+            continue
+        for fname in svg_files:
+            name, _ = os.path.splitext(fname)
+            if el_id in name:
+                related.append(os.path.join(diagrams_dir, fname))
+                break
 
-    return {
-        **state,
-        "diagrams": [f"{diagrams_path}/{el_id}.svg" for el_id in related_diagrams if f"{el_id}.svg" in existing_diagrams],
-    }
+    return {**state, "diagrams": related}

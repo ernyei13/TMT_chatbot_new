@@ -90,7 +90,7 @@ class Summarizer:
 
             with open(d, "r", encoding="utf-8") as file:
                 svg_text = file.read()
-                if len(svg_text) < 50000:
+                if len(svg_text) < 100000:
                     diagram_svgs.append(svg_text)
                 else:
                     continue
