@@ -2,10 +2,7 @@
 .streamlit
 venv_ssl/
 venv_new/
-loaders/elements.json
 
-diagrams/
-diagrams
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
