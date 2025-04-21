@@ -13,6 +13,21 @@ if root not in sys.path:
 from chat_tab import render_chat_tab
 from eval_tab import render_eval_tab
 # Adjust the CSS to align the title and tab selector horizontally and reduce their height
+import streamlit as st
+
+# --- Login screen ---
+if "logged_in" not in st.session_state:
+    st.title("Please log in")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username == "tmtaccount" and password == "tmtadmin":
+            st.session_state.logged_in = True
+            st.experimental_rerun()
+        else:
+            st.error("❌ Invalid credentials")
+    st.stop()
+
 st.set_page_config(page_title="TMT Toolkit", layout="centered", initial_sidebar_state="collapsed")
 
 st.title("TMT Toolkit")
