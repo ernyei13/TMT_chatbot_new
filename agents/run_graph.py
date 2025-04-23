@@ -24,6 +24,31 @@ from langgraph.graph import END, StateGraph, START
 from langgraph.checkpoint.memory import InMemorySaver
 from dotenv import load_dotenv
 import os
+import streamlit as st
+from datetime import timedelta
+from hashlib import md5
+
+@st.cache_resource(ttl=timedelta(hours=1))
+def get_elements() -> Dict[str, Any]:
+    """Load the full SysML element tree (≈ hundreds of MB) exactly once."""
+    return load_elements()
+
+@st.cache_resource(show_spinner=False)
+def get_langgraph(settings: dict):
+    elements = get_elements()          # heavy JSON is already cached
+    return build_sysml_langgraph_agent(elements,
+                                       retrieve_text_from_azure_search,
+                                       settings)
+
+
+
+def _settings_hash(settings: dict) -> str:
+    """Deterministic hash so a new graph is compiled only when
+    the settings actually change."""
+    blob = json.dumps(settings, sort_keys=True).encode()
+    return md5(blob).hexdigest()
+
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -118,9 +143,7 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
         graph.add_edge("summarizer", "followup")
     
     graph.add_edge("followup", END)
-    
 
-    checkpointer = InMemorySaver()
 
     #return graph.compile(checkpointer=checkpointer)
     return graph.compile()
@@ -151,7 +174,8 @@ def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
 
     # Step 2: Build the agent
     log("Building LangGraph agent...")
-    graph = build_sysml_langgraph_agent(elements_local, retrieve_text_from_azure_search, settings)
+    graph = get_langgraph(settings)
+
     log("LangGraph agent ready.")
 
     # Step 3: Execute the query

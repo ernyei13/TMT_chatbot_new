@@ -1,5 +1,12 @@
 Research question: 
 
+action points:
+-more docs
+
+
+
+
+
 
 -Can LLMS be used to answer nlp questions with nlp answers complex system models.Is it feasable to help engineers with (yes)
 -Engineering assistant how reliable (ismert elemeket/strukturakat megtalal e)
@@ -18,7 +25,6 @@ osszesitve 10 az osszeshez
 🔍 Model Query Examples
 Which physical components implement Req.X.Y?
 
-What other components are required for Comp.X.Y to function?
 
 What is the operating principle of the Subsystem.X.Y subsystem?
 

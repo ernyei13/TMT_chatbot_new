@@ -2,12 +2,20 @@ import streamlit as st
 import sys
 import os
 from typing import List, Dict, Any
+from loaders.json_loader import load_elements
+from datetime import timedelta
+from functools import lru_cache
+from hashlib import md5
+import json
 
 # --- Add parent directory to path to find the 'agents' module ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
+
+
+
 
 try:
     # --- Import the core agent function and message types ---
@@ -20,6 +28,7 @@ except ImportError as e:
     st.stop()
 
 # --- Chat Interface ---
+
 
 def render_chat_tab() -> None:
     """Renders the chat agent interface just like chat_app.py."""
@@ -137,6 +146,7 @@ def render_chat_tab() -> None:
             q = question
 
     if prompt := st.chat_input("Ask about the TMT...") or q:
+        
 
         if prompt:
             st.session_state.messages.append({"role": "user", "content": prompt})
@@ -222,7 +232,11 @@ def render_chat_tab() -> None:
                             else:
                                 st.warning(f"Not found: {path}")
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response_data})
+                
+
                 st.rerun()
+                st.session_state.pop("messages", None)
+                
 
             except Exception as e:
                 placeholder.empty()
