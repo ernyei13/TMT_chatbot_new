@@ -32,9 +32,6 @@ class Summarizer:
                 seed=0,
         )
 
-
-
-
         self.prompt_template = """
             You are an expert assistant who understands SysML models. You have access to information about elements in a SysML model and context from TMT project documentation.
 
@@ -104,7 +101,6 @@ class Summarizer:
 
 
 
-
         prompt = self.prompt_template.format(
             model_query_result=model_query_str,
             rag_result=rag_result,
@@ -116,19 +112,3 @@ class Summarizer:
         
         return response
         
-    def __call__(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
-        model_query_result = inputs.get("model_query_result")
-        rag_result = inputs.get("rag_agent_result")
-        diagrams = inputs.get("diagrams", [])
-
-        # Generate the final summary
-        answer = self.summarize_responses(model_query_result, rag_result, diagrams)
-
-        ai_message = AIMessage(content=answer.content if hasattr(answer, "content") else answer)
-
-        return {
-            **inputs,
-            "messages": inputs.get("messages", []) + [ai_message],
-            "final_answer": ai_message.content
-        }
-

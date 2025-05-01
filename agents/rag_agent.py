@@ -13,6 +13,9 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from typing import List, Dict, Callable
 from dotenv import load_dotenv
 import os
+from openai import AzureOpenAI
+
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -52,7 +55,25 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         if state.get("question_for_rag") is not None:
             question = state["question_for_rag"]
 
-        context_chunks = retriever_fn(question)
+        #rephase the question
+        client = AzureOpenAI(
+            azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"), 
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
+            api_version="2025-02-01-preview"
+        )
+
+        prompt_rephrase = f"Rephrase the following question for a RAG agent: {question}"
+        
+        messages = [{"role": "user", "content": prompt_rephrase}] # Single function call
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+        )
+        question_refined = response.choices[0].message.content
+        print(f"[RAG] rephrased question: {question_refined}")
+
+        context_chunks = retriever_fn(question_refined)
         context = state.get("context")
         if context is not None:
             context.append(context_chunks)

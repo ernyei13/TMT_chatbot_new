@@ -1,0 +1,82 @@
+[
+  {
+    "id": "J-TC-1",
+    "category": "Junior Examples",
+    "question": "What is the APS?",
+    "expected_answer": "The APS is the alignment and phasing system and one of the subsystems of the TMT. It’s responsible for the alignment of the segments of the primary mirror.",
+    "keywords": [],
+    "model elements": ["APS"]
+  },
+  {
+    "id": "J-TC-1",
+    "category": "Junior Examples",
+    "question": "What are the main packages in the model?",
+    "expected_answer": "There are two main parts, the Observatory model managed by the TMT project office (PO) and the model managed by JPL that includes the APS. both are organized using OOSEM that describes operational context, mission, blackbox specification, logical and physical design.",
+    "keywords": [],
+    "model elements": ["APS"]
+  },
+  {
+    "id": "J-TC-1",
+    "category": "Junior Examples",
+    "question": "What are the main packages in the model?",
+    "expected_answer": "There are two main parts, the Observatory model managed by the TMT project office (PO) and the model managed by JPL that includes the APS. both are organized using OOSEM that describes operational context, mission, blackbox specification, logical and physical design.",
+    "keywords": [],
+    "model elements": ["APS"]
+  },
+  {
+    "id": "J-TC-2",
+    "category": "Junior Examples",
+    "question": "What’s the main purpose of the model?",
+    "expected_answer": "Verification of timing requirements using the behavioral specification of the as-designed system for various operational and calibration procedures.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "M-TC-1",
+    "category": "Medior Examples",
+    "question": "What are the main elements of the APS architecture?",
+    "expected_answer": "The APS internal components such as PEAS, PIT, Camera, and external systems the APS interacts with such as M1CS, ESW, TCS.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "M-TC-2",
+    "category": "Medior Examples",
+    "question": "What are the main elements capturing the APS behavior?",
+    "expected_answer": "The state machines and activities of the components of the APS logical design.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "M-TC-3",
+    "category": "Medior Examples",
+    "question": "What requirements are verified by the model?",
+    "expected_answer": "Alignment of Post-segment exchange, Calibrate M1CS Edge Sensors, Maintenance Alignment, Off-Axis measurement of WFE, Calibrate elevation dependence of M2 and M3, Measurement of Segment Warping Harness Influence Functions.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "S-TC-1",
+    "category": "Senior Examples",
+    "question": "Which activities are included in verification of the Post Segment Exchange?",
+    "expected_answer": "Coarse Tilt Alignment, Broadband phasing, Offload Sensor Offsets, Correcting rigid body and segment figure, M3 Alignment, Narrowband phasing.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "S-TC-2",
+    "category": "Senior Examples",
+    "question": "In what cases is a new guide star acquired?",
+    "expected_answer": "Coarse tilt alignment, Narrowband phasing, Broadband phasing 30 and 100 but not 1000.",
+    "keywords": [],
+    "model elements": []
+  },
+  {
+    "id": "S-TC-3",
+    "category": "Senior Examples",
+    "question": "What’s the maximum misalignment of M1 when offloading sensor offsets?",
+    "expected_answer": "1 µm.",
+    "keywords": [],
+    "model elements": []
+  }
+]

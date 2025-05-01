@@ -12,15 +12,11 @@ SYSML_TYPE_MAPPING = {
     '_11_5EAPbeta_be00301_1147430239267_179145_1189': 'ValueType',
     '_11_5EAPbeta_be00301_1147873190330_159934_2220': 'Requirement',
     '_17_0_2_3_b4c02e1_1401221134741_575510_101826' : 'Allocate',
-
     '_9_0_be00301_1108044563999_784946_1' : 'Sequencer',   
-
     '_17_0_1_232f03dc_1325612611695_581988_21583' : 'View',
     '_11_5EAPbeta_be00301_1147420760998_43940_227' : 'View',
     '_17_0_2_3_b4c02e1_1380809976981_576006_43117' : 'View',
     '_17_0_1_232f03dc_1325612611695_581988_21583': 'View',
- 
-
     '_18_0_2_876026b_1427584914110_476375_136242' : 'ESW Component',
     '_17_0_5_407019f_1350499084166_247295_11961' : 'Volume',
     '_12_1_8740266_1172578094250_807075_1551' : 'Hardware Component',
@@ -33,10 +29,6 @@ SYSML_TYPE_MAPPING = {
     '_17_0_3_85f027d_1363320204928_98443_3013': 'HierarchyElement',
     '_18_0_2_b4c02e1_1422576771648_76971_83985': 'Object Properties',
     '_17_0_2_3_ff3038a_1383749269646_31940_44489' : 'HierarchyElement',
-
- 
-
-
 }
 
 class Element():
@@ -81,6 +73,10 @@ class Element():
 
     def get_id(self):
         return self.json_data["id"]
+    def get_name(self):
+        if self.json_data["name"] == "":
+            return self.json_data["id"]
+        return self.json_data["name"]
     
         # --- NEW METHOD ---
     def get_basic_info(self, max_depth = 0) -> Dict[str, Any]:
@@ -92,9 +88,9 @@ class Element():
             "name": self.name,
             "type": self.type,
             "sysml_type": self.sysml_type,
-            "slots": [s.serialize(max_depth - 1) for s in self.slots] if max_depth > 0 else [s.get_id() for s in self.slots] ,
-            "children": [c.serialize(max_depth - 1) for c in self.children] if max_depth > 0 else [s.get_id() for s in self.children],
-            "owner": self.owner.serialize(max_depth - 1) if self.owner is not None and max_depth > 0 else (self.owner.get_id() if self.owner is not None else None)
+            "slots": [s.get_basic_info(max_depth - 1) for s in self.slots] if max_depth > 0 else [s.get_id() for s in self.slots] ,
+            "children": [c.get_basic_info(max_depth - 1) for c in self.children] if max_depth > 0 else [s.get_id() for s in self.children],
+            "owner": self.owner.get_basic_info(max_depth - 1) if self.owner is not None and max_depth > 0 else (self.owner.get_id() if self.owner is not None else None)
         }
         # Add documentation only if it exists and is not just whitespace
         if self.documentation and self.documentation.strip():
@@ -136,7 +132,6 @@ class Element():
             "slots": [s.serialize(max_depth - 1) for s in self.slots] if max_depth > 0 else [s.get_id() for s in self.slots] ,
             "children": [c.serialize(max_depth - 1) for c in self.children] if max_depth > 0 else [s.get_id() for s in self.children],
             "owner": self.owner.serialize(max_depth - 1) if self.owner is not None and max_depth > 0 else (self.owner.get_id() if self.owner is not None else None)
-
         }
 
 

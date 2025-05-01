@@ -55,11 +55,12 @@ def load_data(uploaded_file):
         return None, "Invalid JSON format."
 
 
-def run_mock_llm_agent(question: str) -> dict:
+def run_mock_llm_agent(question: str, settings) -> dict:
     """Invoke the agent and return its answer and context."""
     resp = execute_agent_query(
         {"messages": [HumanMessage(question)]},
         logger=st.container(),
+        settings=settings,
     )
     return {
         "answer": resp["final_answer"],

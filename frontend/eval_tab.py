@@ -20,8 +20,10 @@ if os.path.exists(examples_path):
 else:
     default_data = []
 
+
 def render_eval_tab() -> None:
     st.title("LLM Agent Evaluation")
+    
 
     client, deployment = get_azure_openai_client()
     if not client:
@@ -46,7 +48,18 @@ def render_eval_tab() -> None:
 
 
     if st.button("Run Evaluation"):
-        ans = run_mock_llm_agent(item["question"])["answer"]
+        settings = {
+                "enable_planner_agent": st.session_state.get("enable_planner_agent", False),
+                
+                "enable_reviewer_agent": st.session_state.get("enable_reviewer_agent", False),
+                
+                "max_retry_reviewer": st.session_state.get("max_retry_reviewer", 1),
+
+                "max_retry_sysml_filter": st.session_state.get("max_retry_sysml_filter", 8),
+
+                "max_rag": st.session_state.get("max_rag", 8),
+            }
+        ans = run_mock_llm_agent(item["question"], settings = settings)["answer"]
         sim = calculate_similarity(item["expected_answer"], ans,
                                 client, deployment)
         judge = llm_judge_evaluation(item["question"], ans, client)
@@ -62,7 +75,18 @@ def render_eval_tab() -> None:
     if st.button("Run All Examples"):
         results = []
         for example in data:
-            ans = run_mock_llm_agent(example["question"])["answer"]
+            settings = {
+                "enable_planner_agent": st.session_state.get("enable_planner_agent", False),
+                
+                "enable_reviewer_agent": st.session_state.get("enable_reviewer_agent", False),
+                
+                "max_retry_reviewer": st.session_state.get("max_retry_reviewer", 1),
+
+                "max_retry_sysml_filter": st.session_state.get("max_retry_sysml_filter", 8),
+
+                "max_rag": st.session_state.get("max_rag", 8),
+            }
+            ans = run_mock_llm_agent(example["question"], settings=settings)["answer"]
             sim = calculate_similarity(example["expected_answer"], ans,
                                     client, deployment)
             judge = llm_judge_evaluation(example["question"], ans, client)

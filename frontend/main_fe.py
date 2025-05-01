@@ -1,12 +1,20 @@
+
+from __future__ import annotations
+
 import sys
 import os
 import streamlit as st
 
+import sys
+from pathlib import Path
+
 # Make sure agents/ is importable
-current = os.path.dirname(os.path.abspath(__file__))
-root    = os.path.abspath(os.path.join(current, ".."))
-if root not in sys.path:
-    sys.path.append(root)
+ROOT_DIR: Path = Path(__file__).resolve().parents[1]  # …/TMT_chatbot
+if str(ROOT_DIR) not in sys.path:                     # keep it idempotent
+    sys.path.insert(0, str(ROOT_DIR))
+
+
+    
 
 from chat_tab import render_chat_tab
 from eval_tab import render_eval_tab
