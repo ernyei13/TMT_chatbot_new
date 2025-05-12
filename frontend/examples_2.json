@@ -4,8 +4,7 @@
     "category": "Junior Examples",
     "question": "What is the APS?",
     "expected_answer": "The APS is the alignment and phasing system and one of the subsystems of the TMT. It’s responsible for the alignment of the segments of the primary mirror.",
-    "keywords": [],
-    "model elements": ["APS"]
+    "keywords": ["APS"]
   },
   {
     "id": "J-TC-1",
@@ -76,7 +75,150 @@
     "category": "Senior Examples",
     "question": "What’s the maximum misalignment of M1 when offloading sensor offsets?",
     "expected_answer": "1 µm.",
-    "keywords": [],
-    "model elements": []
+    "keywords": ["1 micron"]
+  },
+  {
+    "id": "X-TC-2",
+    "category": "Expert Examples",
+    "question": "What are the parts of the APS logical design?",
+    "expected_answer": "peas - procedure; executive analysis sofrware, Ready, Idle, Active, Fault, Maintenance",
+    "keywords": ["peas - procedure; executive", "analysis sofrware",
+    "beam splitter stage",
+    "Stimulus",
+    "Pupil Image and Tracking assembly",
+    "peas pit tracking",
+    "Internal source",
+    "shear plate",
+    "k-mirror",
+    "sh camera"]
+  },
+  {
+    "id": "X-TC-2",
+    "category": "Expert Examples",
+    "question": "What are the states of PEAS?",
+    "expected_answer": "",
+    "keywords": [
+      "Fine Tilt Alignment",
+      "Initialize Model State for M1CS Sensor Calibration",
+      "Initializing",
+      "M2 and M3 Gravity Calibration",
+      "M3 Alignment",
+      "Maintenance Alignment",
+      "Maintenance Alignment 1um",
+      "Post Segment-Exchange Alignment",
+      "Pre-Session Calibration",
+      "Pupil Registration",
+      "Self Test",
+      "StandBy",
+      "Taking Off-Axis measurements",
+      "Template State",
+      "Tracking Reference Point",
+      "Warping Harness Influence Function Analysis",
+      "Wavefront Calibration"
+  ]
+  },
+  {
+    "id": "X-TC-3",
+    "category": "Expert Examples",
+    "question": "What are the substates of the Post-Segment Exchange Alignment state?",
+    "expected_answer": "",
+    "keywords": [
+      "Broadband Phasing 30",
+      "Broadband Phasing 100",
+      "Broadband Phasing 1000",
+      "Coarse Tilt Alignment",
+      "Correcting Rigid Body and Segment Figure Iteration 1",
+      "Correcting Rigid Body and Segment Figure Iteration 2",
+      "M3 Alignment",
+      "Narrowband Phasing",
+      "Offload Sensor Offsets"
+  ]
+  },
+  {
+    "id": "X-TC-5",
+    "category": "Expert Examples",
+    "question": "What are the interfaces of the APS blackbox specification?",
+    "expected_answer": "",
+    "keywords": [
+      "inout PEAS2M1CSOut : TMT::01",
+      "PEAS2TCSIn «ProxyPort»",
+      "PEAS2TCSOut «ProxyPort»",
+      "PEAS2ESWIn «ProxyPort»",
+      "PEAS2ESWOut «ProxyPort»",
+      "PEAS2M1CSIn «ProxyPort»",
+      "PEAS2CSIn",
+      "PEAS2CSOut",
+      "APS2UserIn «ProxyPort»",
+      "APS2UserOut «ProxyPort»",
+      "GC2ESWIn",
+      "GC2ESWOut",
+      "GCDataOut"
+  ]
+  },
+  {
+    "id": "X-TC-8",
+    "category": "Expert Examples",
+    "question": "What are the use cases of the APS?",
+    "expected_answer": "",
+    "keywords": [
+      "Acquisition",
+      "Align M1 segments in TT",
+      "Align M3",
+      "APS Pre-Session Calibration",
+      "Broad Band Phasing",
+      "Calibrate elevation dependence of M2 and M3",
+      "Calibrate M1CS Edge Sensors",
+      "Calibration of Camera Pointing Offsets",
+      "Collect Reference Beam",
+      "M3 Alignment Procedure",
+      "Maintenance Alignment",
+      "Measurement of segment warping harness influence functions",
+      "Narrow Band Phasing",
+      "Off-Axis measurements of WFE",
+      "Post-Segment Exchange Alignment",
+      "Rigid Body and Segment Figure correction",
+      "Self Test"]
+  },
+  {
+    "id": "X-TC-9",
+    "category": "Expert Examples",
+    "question": "What are the structural elements of the APS operational domain?",
+    "expected_answer": "",
+    "keywords": [
+      "aPS Mission",
+      "maintenance Team",
+      "external Environmet",
+      "external Constraints"
+  ]
+  },
+  {
+    "id": "X-TC-11",
+    "category": "Expert Examples",
+    "question": "What other system components does the APS interface with?",
+    "expected_answer": "APS User,Telescope Control System, M1 Control System, Common Services, Executive Software",
+    "keywords": ["APS User","Telescope Control System", "M1 Control System", "Common Services", "Executive Software"]
+  },
+  {
+    "id": "X-TC-11",
+    "category": "Expert Examples",
+    "question": "What are the structural elements of the APS mission?",
+    "expected_answer": "APS User,Telescope Control System, M1 Control System, Common Services, Executive Software, APS Operational Blackbox Specification JPL ",
+    "keywords": ["APS User","Telescope Control System", "M1 Control System", "Common Services", "Executive Software", "APS Operational Blackbox Specification JPL"]
+  },
+  {
+    "id": "X-TC-11",
+    "category": "Expert Examples",
+    "question": "What are the verified requirements of the APS?",
+    "expected_answer": "APS User,Telescope Control System, M1 Control System, Common Services, Executive Software, APS Operational Blackbox Specification JPL ",
+    "keywords": [
+      "Peak Power Limit Requirement JPL",
+      "On-axis alignment maximum time for Post Segment Exchange JPL",
+      "Maintenance Alignment Maximum Time",
+      "M3 Alignment Maximum Time",
+      "Off-Axis Acquisition Maximum Time",
+      "Warping Harness Maximum Time",
+      "Self Test Maximum Time",
+      "Telescope Pupil Alignment Requirement"
+  ]
   }
 ]

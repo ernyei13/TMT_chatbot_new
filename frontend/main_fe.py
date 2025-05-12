@@ -28,6 +28,9 @@ TMT_USERNAME = st.secrets["TMT_USERNAME"]
 TMT_PASSWORD = st.secrets["TMT_PASSWORD"]
 st.session_state.logged_in = True
 
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
 
 if "logged_in" not in st.session_state:
     st.title("Please log in")

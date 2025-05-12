@@ -73,12 +73,13 @@ class Element():
 
     def get_id(self):
         return self.json_data["id"]
-    def get_name(self):
-        if self.json_data["name"] == "":
-            return self.json_data["id"]
-        return self.json_data["name"]
     
-        # --- NEW METHOD ---
+    def get_name(self):
+        try:
+            return self.json_data["name"]
+        except:
+            return self.json_data["id"]
+    
     def get_basic_info(self, max_depth = 0) -> Dict[str, Any]:
         """
         Returns a dictionary containing the basic requested information for the element.
@@ -88,9 +89,9 @@ class Element():
             "name": self.name,
             "type": self.type,
             "sysml_type": self.sysml_type,
-            "slots": [s.get_basic_info(max_depth - 1) for s in self.slots] if max_depth > 0 else [s.get_id() for s in self.slots] ,
-            "children": [c.get_basic_info(max_depth - 1) for c in self.children] if max_depth > 0 else [s.get_id() for s in self.children],
-            "owner": self.owner.get_basic_info(max_depth - 1) if self.owner is not None and max_depth > 0 else (self.owner.get_id() if self.owner is not None else None)
+            "slots": [s.get_basic_info(max_depth - 1) for s in self.slots] if max_depth > 0 else [s.get_name() for s in self.slots] ,
+            "children": [c.get_basic_info(max_depth - 1) for c in self.children] if max_depth > 0 else [s.get_name() for s in self.children],
+            "owner": self.owner.get_basic_info(max_depth - 1) if self.owner is not None and max_depth > 0 else (self.owner.get_name() if self.owner is not None else None)
         }
         # Add documentation only if it exists and is not just whitespace
         if self.documentation and self.documentation.strip():

@@ -13,15 +13,15 @@ def diagram_retriever(state: Dict[str, Any]) -> Dict[str, Any]:
         if 'id' in raw:
             model_elements = [raw]
             print("[DIAGRAM RETRIEVER] Found single element")
-            print(model_elements)
+            #print(model_elements)
         else:
             model_elements = list(raw.values())
             print("[DIAGRAM RETRIEVER] Found multiple elements")
-            print(model_elements)
+            #print(model_elements)
     elif isinstance(raw, list):
         model_elements = raw
         print("[DIAGRAM RETRIEVER] Found list of elements")
-        print(model_elements)
+        #print(model_elements)
     else:
         model_elements = []
 
@@ -39,7 +39,6 @@ def diagram_retriever(state: Dict[str, Any]) -> Dict[str, Any]:
 
     related: List[str] = []
     for element in model_elements:
-        print(f"Element: {element}")
         if not isinstance(element, dict):
             continue
         el_id = element.get("id")
@@ -48,6 +47,7 @@ def diagram_retriever(state: Dict[str, Any]) -> Dict[str, Any]:
         for fname in svg_files:
             name, _ = os.path.splitext(fname)
             if el_id in name:
+                print(f"[DIAGRAM RETRIEVER] Found related diagram: {fname}")
                 related.append(os.path.join(diagrams_dir, fname))
                 break
 

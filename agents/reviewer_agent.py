@@ -13,8 +13,6 @@ load_dotenv()
 
 def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     """
-    Create a reviewer agent that checks if the AI answer is complete.
-
     Returns JSON with keys:
     - complete: bool
     - answer: str
@@ -26,11 +24,12 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
         "  - complete (true/false)\n"
         "  - answer (your feedback or final answer)\n"
         "  - call ( choose an agent to call next from ['sysml_query_agent', 'rag_agent']) only call final if the answer is flawless\n"
-        "  - question_for_rag  if you want to call the rag agent specify a better question to retrieve context\n"
-        "  - question_for_model if you want to use the sysml_query_agent give it a better quesiton to retrieve the required elements\n"
+        "  - question_for_rag  if you want to call the rag agent specify a better question to retrieve context GIVE THE NEW QUESTION HERE\n"
+        "  - question_for_model if you want to use the sysml_query_agent give it a better quesiton to retrieve the required elements GIVE THE NEW QUESTION HERE\n\n\n"
     )
 
     system_message = SystemMessage(content=prompt_text)
+
     def _reviewer(state: dict) -> dict:
        # print(f"[REVIEWER] State: {state}")
         print(f"[REVIEWER] Retry count: {state['retry_count']}")
@@ -45,11 +44,7 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
             }
 
         # Extract last human question and AI answer
-        msgs = state['messages']
-        question = next((m.content for m in reversed(msgs)
-                         if isinstance(m, HumanMessage)), '')
-        answer = next((m.content for m in reversed(msgs)
-                       if isinstance(m, AIMessage)), '')
+        question = state['question']
         final_answer = state['final_answer']
 
         # Build and run the LLM chain
@@ -57,6 +52,10 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
             system_message,
             HumanMessage(content=f"Question: {question}\nAnswer: {final_answer}"),
         ])
+        
+        print(f"[REVIEWER] PROMPT: {chat_prompt}")
+
+
         chain = (
             chat_prompt
             | AzureChatOpenAI(
@@ -89,6 +88,8 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
             "messages": new_msgs,
             "retry_count": state.get("retry_count", 0) + 1,
             "call": call,
+            "question_for_model": parsed.get("question_for_model"),
+            "question_for_rag": parsed.get("question_for_rag")
         }
 
     return RunnableLambda(_reviewer)

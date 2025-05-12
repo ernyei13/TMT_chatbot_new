@@ -23,6 +23,9 @@ load_dotenv()
 # Summarizer class that handles summarization tasks
 class Summarizer:
     def __init__(self):
+
+        print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')}")
+        print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_ENDPOINT')}")
         self.llm = AzureChatOpenAI(
                 deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
                 api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -49,14 +52,19 @@ class Summarizer:
             If you mention an element allways include the id in square brackets, e.g. [ID].
 
             Provide a detailed yet understandable summary of the findings. With concretes examples and references to the model elements and documentation.
+
+            Your ultimate goal is to provide an answer to the user's question, which is:
+            {question}
         """
     def __call__(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         model_query_result = inputs.get("model_query_result")
         rag_result = inputs.get("rag_agent_result")
         diagrams = inputs.get("diagrams", [])
+        question = inputs.get("question")
+        print(f"[Summarizer] question: {question}")
 
         # Generate the final summary
-        answer = self.summarize_responses(model_query_result, rag_result, diagrams)
+        answer = self.summarize_responses(model_query_result, rag_result, diagrams, question)
         content = answer.content if hasattr(answer, "content") else answer
         ai_message = AIMessage(content=content)
 
@@ -76,7 +84,7 @@ class Summarizer:
             graph.append(f"Element: {element['name']}, Type: {element['sysml_type']}")
         return "\n".join(graph)
 
-    def summarize_responses(self, model_query_result: Dict, rag_result: str, diagrams) -> str:
+    def summarize_responses(self, model_query_result: Dict, rag_result: str, diagrams, question: str) -> str:
         # Prepare the LLM prompt to summarize both results
         model_query_str = json.dumps(model_query_result, indent=2)
 
@@ -104,7 +112,8 @@ class Summarizer:
         prompt = self.prompt_template.format(
             model_query_result=model_query_str,
             rag_result=rag_result,
-            diagrams=diagram_svgs
+            diagrams=diagram_svgs,
+            question=question
         )
 
         # Use the LLM to summarize the response

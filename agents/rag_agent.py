@@ -53,7 +53,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
      
         # Retrieve context chunks for the question
         if state.get("question_for_rag") is not None:
-            question = state["question_for_rag"]
+            question = "original question:" + question + " new question from the reviewer agent: " + state["question_for_rag"]
 
         #rephase the question
         client = AzureOpenAI(
@@ -70,6 +70,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
             model="gpt-4o-mini",
             messages=messages,
         )
+
         question_refined = response.choices[0].message.content
         print(f"[RAG] rephrased question: {question_refined}")
 
@@ -78,10 +79,8 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         if context is not None:
             context.append(context_chunks)
         context = context_chunks
-        if state.get("question_for_rag") is not None:
-            question_refined = state["question_for_rag"]
-            print(f"[RAG] qestion for rag: {question_refined}")
-        print(f"[RAG] query: {question}")
+
+
 
         # Build the prompt
         prompt = ChatPromptTemplate.from_template(
@@ -102,6 +101,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         )
 
         # Get the response from the chain
+        print(f"[RAG] question: {question} ")
         answer = chain.invoke({
             "system_prompt": system_prompt,
             "context": context,

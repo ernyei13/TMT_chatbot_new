@@ -22,6 +22,7 @@ def clean_json_response(response: str) -> str:
 
 # ----------- QUERY BUILDER NODE -----------
 def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
+    print(f"[GRAPH AGENT] max retry: {max_retry}")
     system_prompt = """
         You are an expert assistant for querying SysML models, specifically for a system that manages TMT project documentation.  
         You are tasked with generating queries to search through SysML elements with a wide range of attributes, including relationships between elements.
@@ -92,6 +93,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
     def _agent(state: dict) -> dict:
         results = []
         messages = state["messages"]
+        
         #use the question_for_model to get the question
         for msg in reversed(messages):
             if isinstance(msg, HumanMessage):
@@ -100,7 +102,10 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
         
         #extract the question from question_for_model
 
-        question = q
+        question = state["question"]
+
+        if state.get("question_for_model") is not None:
+            question = "original question:" + question + " new question from the reviewer agent: " + state["question_for_model"]
 
         print("[GRAPH AGENT] Question to the Graph query agent:", question)
         
@@ -219,7 +224,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 def _executor(state: dict) -> List[Dict[str, Any]]:
     query = state.get("query", {})
     elements = state.get("elements", {})
-    max_results = 10  # Optional: limit number of main results
+    max_results = 100  # Optional: limit number of main results
     max_relations = 5  # Optional: limit number of related items
 
     results = []
@@ -311,9 +316,14 @@ def _executor(state: dict) -> List[Dict[str, Any]]:
                 ]
 
         results.append(result)
+        
 
         if len(results) >= max_results:
             break
-
+    print("number of retrieved model elements:", len(results))
+    for r in results:
+        print("retrieved element id:", r["id"])
+        print("retrieved element name:", r["name"])
+        print("retrieved element type:", r["sysml_type"])
     return results
 

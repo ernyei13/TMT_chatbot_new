@@ -9,8 +9,6 @@ if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
 
-
-
 try:
     # --- Import the core agent function and message types ---
     from agents.run_graph import execute_agent_query
@@ -90,8 +88,8 @@ def render_chat_tab() -> None:
                     st.markdown("**🧩 Relevant Model Elements:**")
                     elements = result_data.get("model_query_result", [])
                     if elements:
-                        if isinstance(elements, list):
-                            for i, element in enumerate(elements):
+                        if isinstance(elements, dict) and len(elements) < 10:
+                            for i, element in enumerate(elements.values()):
                                 if isinstance(element, dict):
                                     name = element.get("name", f"Element {i+1}")
                                     eid = element.get("id", "No ID")
@@ -100,7 +98,7 @@ def render_chat_tab() -> None:
                                 else:
                                     break
                         else:
-                            with st.expander(f"One element found", expanded=False):
+                            with st.expander(f"Elements", expanded=False):
                                 st.json(elements)
                     else:
                         st.caption("No relevant model elements identified.")
