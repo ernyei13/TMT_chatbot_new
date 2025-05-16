@@ -13,10 +13,15 @@ import numpy as np
 from openai import AzureOpenAI
 from sklearn.metrics.pairwise import cosine_similarity
 from fuzzywuzzy import fuzz
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 
 import streamlit as st
 from dotenv import load_dotenv
 from openai import AzureOpenAI
+
+import pandas as pd
+from agents.run_graph import execute_agent_query
+
 
 load_dotenv()
 
@@ -182,3 +187,58 @@ def load_data(uploaded_file):
             item["keywords"] = []
 
     return data, None
+
+
+def run_batch_evaluation(data: list, client, deployment, settings: dict, output_csv_path: str) -> None:
+    results = []
+
+    for idx, item in enumerate(data):
+        question = item["question"]
+        expected_answer = item["expected_answer"]
+        keywords = item.get("keywords", [])
+
+        agent_input = {
+            "messages": [HumanMessage(content=question)],
+            "model_query_result": {},
+            "rag_context": {}
+        }
+        try:
+            result = execute_agent_query(agent_input, settings, logger=None)
+            answer = result.get("final_answer", "")
+        except Exception as e:
+            answer = ""
+            print(f"Error running query on item {idx}: {e}")
+
+        try:
+            sim = compute_vector_similarity(expected_answer, answer, client, deployment)
+        except Exception:
+            sim = -1.0
+
+        try:
+            judge = compute_llm_judge(question, answer, expected_answer, keywords, client)
+            judge_score = judge["score"]
+            judge_comment = judge["comment"]
+        except Exception:
+            judge_score = -1
+            judge_comment = "error"
+
+        try:
+            kw_count = compute_keyword_count(answer, keywords)
+            kw_coverage = (kw_count / len(keywords)) * 100 if keywords else 0
+        except Exception:
+            kw_count = -1
+            kw_coverage = 0
+
+        results.append({
+            "id": item.get("id", idx),
+            "question": question,
+            "similarity": sim,
+            "judge_score": judge_score,
+            "judge_comment": judge_comment,
+            "keyword_count": kw_count,
+            "keyword_coverage": f"{kw_coverage:.0f}%",
+        })
+
+    df = pd.DataFrame(results)
+    df.to_csv(output_csv_path, index=False)
+    print(f"Results written to {output_csv_path}")

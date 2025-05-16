@@ -125,7 +125,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
             | StrOutputParser()
         )
 
-        # Use the system prompt and question to generate the query !!!!!!!!!
+        # Use the system prompt and question to generate the query
         response = chain.invoke({
             "system_prompt": system_prompt,
             "question": question

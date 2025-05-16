@@ -80,8 +80,6 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
             context.append(context_chunks)
         context = context_chunks
 
-
-
         # Build the prompt
         prompt = ChatPromptTemplate.from_template(
             "{system_prompt}\n\nContext:\n{context}\n\nQuestion: {question} "
@@ -102,11 +100,14 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
 
         # Get the response from the chain
         print(f"[RAG] question: {question} ")
+        print(f"[RAG] length of context: {len(context)}")
         answer = chain.invoke({
             "system_prompt": system_prompt,
             "context": context,
             "question": question,
         })
+
+        
 
         return {
             **state,  # Keep everything from the original state

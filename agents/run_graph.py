@@ -1,32 +1,24 @@
+from typing import Callable, Dict, Any, List, TypedDict, Annotated, Sequence
+from hashlib import md5
+from datetime import timedelta
+import json
+
+import streamlit as st
+from dotenv import load_dotenv
+
+from langgraph.graph import StateGraph, END, add_messages
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_core.runnables import RunnableLambda
+
 from agents.rag_agent import make_rag_agent
 from agents.graph_agent import make_query_builder_agent
 from agents.tools.vector_db_search import retrieve_text_from_azure_search
 from agents.tools.diagram_retriever import diagram_retriever
 from agents.summarizer_agent import Summarizer
 from agents.reviewer_agent import make_reviewer_agent
-from agents.planner_agent import make_planner_agent
-from loaders.json_loader import load_elements
 from agents.question_agent import make_followup_agent
+from loaders.json_loader import load_elements
 
-from typing import Callable, Dict, Any, List
-
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableLambda
-from langchain_core.output_parsers import StrOutputParser
-from langchain_openai import AzureChatOpenAI
-from langgraph.graph import StateGraph, END
-import json
-from langgraph.graph import add_messages
-from langchain_core.messages import BaseMessage, SystemMessage, HumanMessage, AIMessage
-from typing import TypedDict, Annotated, Sequence
-from langchain_core.messages import HumanMessage
-from langgraph.graph import END, StateGraph, START
-from langgraph.checkpoint.memory import InMemorySaver
-from dotenv import load_dotenv
-import os
-import streamlit as st
-from datetime import timedelta
-from hashlib import md5
 
 @st.cache_resource(ttl=timedelta(hours=1))
 def get_elements() -> Dict[str, Any]:
@@ -46,13 +38,28 @@ def _settings_hash(settings: dict) -> str:
     blob = json.dumps(settings, sort_keys=True).encode()
     return md5(blob).hexdigest()
 
+# Define agent state
+class AgentState(TypedDict):
+    messages: Annotated[Sequence[BaseMessage], add_messages]
+    question: str
+    rag_context: Dict[str, Any]
+    question_for_rag: str
+    question_for_model: str
+    model_query_result: Dict[str, Any]
+    rag_agent_result: str
+    final_answer: str
+    diagrams: List[str]
+    complete: bool
+    retry_count: int
+    followup_q: List[str]
 
 
 # ----------- BUILD STATE GRAPH -----------
 def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable, settings: dict):
 
+    #set the settings from the frontend
     sysml_retry_num = settings.get("max_retry_sysml_filter", 8)
-    print(f"[SYSML] max retry: {sysml_retry_num}")
+
     sysml_query_agent = make_query_builder_agent(elements, sysml_retry_num)
 
     rag_max_documents = settings.get("max_rag", 5)
@@ -62,40 +69,24 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
         lambda q: retrieve_text_from_azure_search(q, 0, rag_max_documents, True, True) 
     )
 
-    # Create optional agents
+    # Create agents
     reviewer_agent = make_reviewer_agent(max_reviews=settings.get("max_retry_reviewer", 1))
-    planner_agent = make_planner_agent()
-
+    #planner_agent = make_planner_agent()
     followup = make_followup_agent()
-
-
     diagram_retriever_node = RunnableLambda(diagram_retriever)
     summarizer = Summarizer()
     summarizer_runnable = RunnableLambda(summarizer)
 
-    # Define agent state
-    class AgentState(TypedDict):
-        messages: Annotated[Sequence[BaseMessage], add_messages]
-        question: str
-        rag_context: Dict[str, Any]
-        question_for_rag: str
-        question_for_model: str
-        model_query_result: Dict[str, Any]
-        rag_agent_result: str
-        final_answer: str
-        diagrams: List[str]
-        complete: bool
-        retry_count: int
-        followup_q: List[str]
-
     # Create the graph and link the nodes
     graph = StateGraph(AgentState)
 
+    # define router fun
     def review_decision(state: Dict[str, Any]) -> str:
         if state.get("complete", False):
             return "final"
         return state.get("call")
     
+    # define entry node
     def set_retry_count(state: Dict[str, Any]) -> Dict[str, Any]:
         for msg in reversed(state["messages"]):
             if isinstance(msg, HumanMessage):
@@ -106,18 +97,11 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
             "retry_count": 0,
             "question": q
         }
-    
-    if settings.get("enable_planner_agent", False):
-        graph.add_node("planner", planner_agent)
-        graph.add_node("set_retry_count", set_retry_count)
-        graph.set_entry_point("planner")
-        graph.add_edge("planner", "sysml_query_agent")
-        graph.add_edge("planner", "set_retry_count")
 
-    else:
-        graph.add_node("set_retry_count", set_retry_count)
-        graph.set_entry_point("set_retry_count")
-        graph.add_edge("set_retry_count", "rag_agent")
+    #define the nodes of the graph 
+    
+    graph.add_node("set_retry_count", set_retry_count)
+    graph.set_entry_point("set_retry_count")
 
     graph.add_node("sysml_query_agent", sysml_query_agent)
     graph.add_node("rag_agent", rag_agent)
@@ -125,12 +109,14 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
     graph.add_node("summarizer", summarizer_runnable)
     graph.add_node("followup", followup)
 
+    #define the edges
+    graph.add_edge("set_retry_count", "rag_agent")
     graph.add_edge("rag_agent", "sysml_query_agent")
     graph.add_edge("sysml_query_agent", "diagram_retriever")
     graph.add_edge("diagram_retriever", "summarizer")
 
+    #construct based on the settings
     if settings.get("enable_reviewer_agent", False):
-
         graph.add_node("reviewer", reviewer_agent)
         graph.add_edge("summarizer", "reviewer")
         graph.add_conditional_edges(
@@ -147,13 +133,9 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
     
     graph.add_edge("followup", END)
 
-
-    #return graph.compile(checkpointer=checkpointer)
     return graph.compile()
 
-
-
-# ----------- EXECUTION OF QUERY -----------
+# query execution
 def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
     # Create a container to show progress
     progress_area = logger.container() if logger else None
@@ -174,11 +156,9 @@ def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
             "model_query_result": []
         }
 
-    # Step 2: Build the agent
-    log("Building LangGraph agent...")
+    # Step 2: Build the workflow based on the settings
     graph = get_langgraph(settings)
-
-    log("LangGraph agent ready.")
+    log(f"LangGraph workflow ready. Settings: {settings}")
 
     # Step 3: Execute the query
     log("Running agent...")
@@ -197,10 +177,9 @@ def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
         if node_name == "followup":
             log(f"✅ Follow‑up questions generated by `{node_name}`")
             final_state = node_output
-            break
-                #break  # stop streaming if you're happy with final state
+            break #stop if final message gatherred
         else:
-            log(f"🔄 Intermediate state from `{node_name}`")
+            log(f"Intermediate state from `{node_name}`")
             log(f"💬 {node_output['messages'][-1].content}")
             if node_name == "rag_agent":
                 log(f"🔍 Found {len(node_output['rag_context'])} relevant chunks")
@@ -210,7 +189,9 @@ def execute_agent_query(user_input: str,  settings: dict, logger=None) -> dict:
                 log(f"📊 Found {len(node_output['diagrams'])} diagrams")
             if node_name == "summarizer":
                 log(f"📜 Summarizer input tokens")
+            if node_name == "reviewer":
+                log(f"🔄 Reviewer input tokens")
 
-    log("✅ Agent completed.")
+    log("✅ Workflow completed.")
 
     return final_state

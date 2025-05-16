@@ -1,0 +1,38 @@
+[
+    {
+      "id": "X-TC-8",
+      "category": "Expert Examples",
+      "question": "What are the use cases of the APS?",
+      "expected_answer": "Acquisition, Align M1 segments in TT, Align M3, APS Pre-Session Calibration, Broad Band Phasing, Calibrate elevation dependence of M2 and M3, Calibrate M1CS Edge Sensors, Calibration of Camera Pointing Offsets, Collect Reference Beam, M3 Alignment Procedure, Maintenance Alignment, Measurement of segment warping harness influence functions, Narrow Band Phasing, Off-Axis measurements of WFE, Post-Segment Exchange Alignment, Rigid Body and Segment Figure correction, Self Test",
+      "keywords": ["Acquisition", "Align M1 segments in TT", "Align M3", "APS Pre-Session Calibration", "Broad Band Phasing", "Calibrate elevation dependence of M2 and M3", "Calibrate M1CS Edge Sensors", "Calibration of Camera Pointing Offsets", "Collect Reference Beam", "M3 Alignment Procedure", "Maintenance Alignment", "Measurement of segment warping harness influence functions", "Narrow Band Phasing", "Off-Axis measurements of WFE", "Post-Segment Exchange Alignment", "Rigid Body and Segment Figure correction", "Self Test"]
+    },
+    {
+      "id": "X-TC-9",
+      "category": "Expert Examples",
+      "question": "What are the structural elements of the APS operational domain?",
+      "expected_answer": "aPS Mission, maintenance Team, external Environment, external Constraints",
+      "keywords": ["aPS Mission", "maintenance Team", "external Environmet", "external Constraints"]
+    },
+    {
+      "id": "X-TC-11",
+      "category": "Expert Examples",
+      "question": "What other system components does the APS interface with?",
+      "expected_answer": "APS User,Telescope Control System, M1 Control System, Common Services, Executive Software",
+      "keywords": ["APS User", "Telescope Control System", "M1 Control System", "Common Services", "Executive Software"]
+    },
+    {
+      "id": "X-TC-11",
+      "category": "Expert Examples",
+      "question": "What are the structural elements of the APS mission?",
+      "expected_answer": "APS User,Telescope Control System, M1 Control System, Common Services, Executive Software, APS Operational Blackbox Specification JPL",
+      "keywords": ["APS User", "Telescope Control System", "M1 Control System", "Common Services", "Executive Software", "APS Operational Blackbox Specification JPL"]
+    },
+    {
+      "id": "X-TC-11",
+      "category": "Expert Examples",
+      "question": "What are the verified requirements of the APS?",
+      "expected_answer": "Peak Power Limit Requirement JPL, On-axis alignment maximum time for Post Segment Exchange JPL, Maintenance Alignment Maximum Time, M3 Alignment Maximum Time, Off-Axis Acquisition Maximum Time, Warping Harness Maximum Time, Self Test Maximum Time, Telescope Pupil Alignment Requirement",
+      "keywords": ["Peak Power Limit Requirement JPL", "On-axis alignment maximum time for Post Segment Exchange JPL", "Maintenance Alignment Maximum Time", "M3 Alignment Maximum Time", "Off-Axis Acquisition Maximum Time", "Warping Harness Maximum Time", "Self Test Maximum Time", "Telescope Pupil Alignment Requirement"]
+    }
+]
+  

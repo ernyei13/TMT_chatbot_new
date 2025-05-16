@@ -19,14 +19,33 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     - call: str | None
     """
     prompt_text = (
-        "You are a reviewer. Evaluate if the AI-generated answer fully addresses the user's question. The questions are about a telescope project. Called TMT.\n"
-        "Return a JSON object with keys:\n"
-        "  - complete (true/false)\n"
-        "  - answer (your feedback or final answer)\n"
-        "  - call ( choose an agent to call next from ['sysml_query_agent', 'rag_agent']) only call final if the answer is flawless\n"
-        "  - question_for_rag  if you want to call the rag agent specify a better question to retrieve context GIVE THE NEW QUESTION HERE\n"
-        "  - question_for_model if you want to use the sysml_query_agent give it a better quesiton to retrieve the required elements GIVE THE NEW QUESTION HERE\n\n\n"
+        "You are a critical reviewer for AI-generated responses in the domain of telescope systems, specifically for the Thirty Meter Telescope (TMT).\n\n"
+        "Your job is to decide if the AI's answer is complete, useful, and accurate.\n"
+        "IF THE ANSWER IS SAYING THERE IS NO CONTEXT OR DID NOT FOUND IT THEN IT IS NOT COMPLETE!\n"
+        "## Instructions:\n"
+        "1. Evaluate whether the answer fully addresses the user's question.\n"
+        "2. If the answer is incomplete, vague, or incorrect, suggest what should be improved.\n"
+        "3. Decide what agent to call next to improve the result:\n"
+        "   - 'rag_agent' for better documentation context.\n"
+        "   - 'sysml_query_agent' for more relevant SysML model elements.\n"
+        "4. Optionally rewrite the user question to help the next agent (RAG or model).\n"
+        "5. Return your evaluation as a JSON object with the following keys:\n\n"
+        "```\n"
+        "{\n"
+        "  \"complete\": true | false,               // Is the answer sufficient and final?\n"
+        "  \"answer\": \"your final feedback\",       // Explain your reasoning or return the improved answer\n"
+        "  \"call\": \"rag_agent\" | \"sysml_query_agent\" | null,\n"
+        "  \"question_for_rag\": \"...optional...\", // Rewrite if calling rag_agent\n"
+        "  \"question_for_model\": \"...optional...\" // Rewrite if calling sysml_query_agent\n"
+        "}\n"
+        "```\n\n"
+        "## Rules:\n"
+        "- Always return 'complete': true when the answer is flawless.\n"
+        "- Never call another agent if the answer already satisfies the user.\n"
+        "- Use plain language, be constructive, and suggest improvements if needed.\n"
+        "- Do not return Markdown or escape JSON.\n"
     )
+
 
     system_message = SystemMessage(content=prompt_text)
 
@@ -50,7 +69,7 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
         # Build and run the LLM chain
         chat_prompt = ChatPromptTemplate.from_messages([
             system_message,
-            HumanMessage(content=f"Question: {question}\nAnswer: {final_answer}"),
+            HumanMessage(content=f"Question: {question}\n Number of tries before this {reviews} Answer: {final_answer}"),
         ])
         
         print(f"[REVIEWER] PROMPT: {chat_prompt}")
@@ -93,6 +112,3 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
         }
 
     return RunnableLambda(_reviewer)
-
-# In build_sysml_langgraph_agent, map 'model_query_agent' to 'sysml_query_agent'
-# graph.add_conditional_edges(..., {'model_query_agent': 'sysml_query_agent', ...})

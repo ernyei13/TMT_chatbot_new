@@ -1,9 +1,7 @@
 
 from loaders.json_loader import load_elements
-
 from typing import Callable, Dict, Any, List
 import os
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
@@ -17,14 +15,13 @@ from langchain_core.messages import HumanMessage
 from langgraph.graph import END, StateGraph, START
 from dotenv import load_dotenv
 import os
+
 # Load environment variables from .env file
 load_dotenv()
 
 # Summarizer class that handles summarization tasks
 class Summarizer:
     def __init__(self):
-
-        print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')}")
         print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_ENDPOINT')}")
         self.llm = AzureChatOpenAI(
                 deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
@@ -56,11 +53,12 @@ class Summarizer:
             Your ultimate goal is to provide an answer to the user's question, which is:
             {question}
         """
+
     def __call__(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         model_query_result = inputs.get("model_query_result")
-        rag_result = inputs.get("rag_agent_result")
         diagrams = inputs.get("diagrams", [])
         question = inputs.get("question")
+        rag_result = inputs.get("rag_agent_result")
         print(f"[Summarizer] question: {question}")
 
         # Generate the final summary
@@ -72,10 +70,11 @@ class Summarizer:
             **inputs,
             "messages": inputs.get("messages", []) + [ai_message],
             "final_answer": content,
-            "complete": False,       # defer to reviewer
-            "call": "reviewer",      # route next to reviewer agent
+            "complete": False,
+            "call": "reviewer",
         }
 
+    #not used
     def generate_graph(self, elements: List[Dict[str, Any]]) -> str:
         # Create a simple graph of related elements
         # For simplicity, return just the names of related elements in a simple textual format
@@ -107,8 +106,6 @@ class Summarizer:
         print("length of model query result")
         print(len("\n".join(model_query_str)))
 
-
-
         prompt = self.prompt_template.format(
             model_query_result=model_query_str,
             rag_result=rag_result,
@@ -116,8 +113,7 @@ class Summarizer:
             question=question
         )
 
-        # Use the LLM to summarize the response
+        # Call the LLM to summarize the response
         response = self.llm.invoke(prompt)
-        
         return response
         

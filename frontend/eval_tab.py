@@ -11,6 +11,7 @@ from eval_utils.eval_utils import (
     compute_vector_similarity,
     compute_llm_judge,
     compute_keyword_count,
+    run_batch_evaluation
 )
 from langchain_core.messages import HumanMessage
 
@@ -46,6 +47,28 @@ def render_eval_tab() -> None:
         format_func=lambda i: data[i]["question"],
     )
     item = data[idx]
+
+    if st.button("Run Batch Evaluation"):
+        settings = {
+            "enable_planner_agent": st.session_state.get(
+                "enable_planner_agent", False
+            ),
+            "enable_reviewer_agent": st.session_state.get(
+                "enable_reviewer_agent", False
+            ),
+            "max_retry_reviewer": st.session_state.get(
+                "max_retry_reviewer", 1
+            ),
+            "max_retry_sysml_filter": st.session_state.get(
+                "max_retry_sysml_filter", 8
+            ),
+            "max_rag": st.session_state.get("max_rag", 8),
+        }
+        progress_log = st.container()
+        output_csv = os.path.join(os.path.dirname(__file__), "evaluation_results.csv")
+        run_batch_evaluation(data, client, deployment, settings, output_csv)
+        st.success("Batch evaluation complete. File saved.")
+
 
     if st.button("Run Evaluation"):
         settings = {
