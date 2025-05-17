@@ -18,6 +18,8 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 import streamlit as st
 from dotenv import load_dotenv
 from openai import AzureOpenAI
+import csv
+
 
 import pandas as pd
 from agents.run_graph import execute_agent_query
@@ -239,6 +241,23 @@ def run_batch_evaluation(data: list, client, deployment, settings: dict, output_
             "keyword_coverage": f"{kw_coverage:.0f}%",
         })
 
-    df = pd.DataFrame(results)
-    df.to_csv(output_csv_path, index=False)
-    print(f"Results written to {output_csv_path}")
+        row = {
+            "id": item.get("id", idx),
+            "question": question,
+            "similarity": sim,
+            "judge_score": judge_score,
+            "judge_comment": judge_comment,
+            "keyword_count": kw_count,
+            "keyword_coverage": f"{kw_coverage:.0f}%",
+            "result": result.get("final_answer", ""),
+        }
+
+        header = [
+            "id", "question", "similarity",
+            "judge_score", "judge_comment",
+            "keyword_count", "keyword_coverage", "result",
+        ]
+                # Append result to CSV
+        with open(output_csv_path, mode="a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writerow(row)

@@ -11,6 +11,7 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 load_dotenv()
 
 
+
 def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     """
     Returns JSON with keys:
@@ -18,43 +19,56 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     - answer: str
     - call: str | None
     """
-    prompt_text = (
+
+    # Base prompt shared by both modes
+    base_prompt = (
         "You are a critical reviewer for AI-generated responses in the domain of telescope systems, specifically for the Thirty Meter Telescope (TMT).\n\n"
         "Your job is to decide if the AI's answer is complete, useful, and accurate.\n"
         "IF THE ANSWER IS SAYING THERE IS NO CONTEXT OR DID NOT FOUND IT THEN IT IS NOT COMPLETE!\n"
         "## Instructions:\n"
         "1. Evaluate whether the answer fully addresses the user's question.\n"
         "2. If the answer is incomplete, vague, or incorrect, suggest what should be improved.\n"
-        "3. If the answer is missing elements mentioned by ID in [] call the sysml_query_agent.\n"
+        "3. If the answer does not mention elements by ID in brackets it is INCOMPLETE.\n"
         "4. Decide what agent to call next to improve the result:\n"
         "   - 'rag_agent' for better documentation context.\n"
         "   - 'sysml_query_agent' for more relevant SysML model elements.\n"
-        "5. Optionally rewrite the user question to help the next agent (RAG or model).\n"
-        "6. Return your evaluation as a JSON object with the following keys:\n\n"
+        "5. Rewrite the user question to help the next agent use knowledge from the already given answer (RAG or model).\n"
+        "6. Return your evaluation as a JSON object with the following keys:\n"
         "```\n"
         "{\n"
-        "  \"complete\": true | false,               // Is the answer sufficient and final?\n"
-        "  \"answer\": \"your final feedback\",       // Explain your reasoning or return the improved answer\n"
+        "  \"complete\": true | false,\n"
+        "  \"answer\": \"your final feedback\",\n"
         "  \"call\": \"rag_agent\" | \"sysml_query_agent\" | null,\n"
-        "  \"question_for_rag\": \"...optional...\", // Rewrite if calling rag_agent\n"
-        "  \"question_for_model\": \"...optional...\" // Rewrite if calling sysml_query_agent\n"
+        "  \"question_for_rag\": \"new refined question for Docuements Retriever Agent\",\n"
+        "  \"question_for_model\": \"new question for the SysML model\"\n"
         "}\n"
-        "```\n\n"
+        "```\n"
         "## Rules:\n"
-        "- Always return 'complete': true when the answer is flawless.\n"
-        "- Never call another agent if the answer already satisfies the user.\n"
-        "- Use plain language, be constructive, and suggest improvements if needed.\n"
-        "- Do not return Markdown or escape JSON.\n"
     )
 
+    # Prompt for first round: complete must be false
+    first_round_prompt = base_prompt + (
+        "- You are in the initial round. Never return 'complete': true, even if the answer seems decent.\n"
+        "- Always suggest what to improve and which agent to call.\n"
+        "- You are expected to drive iteration at this stage.\n"
+    )
 
-    system_message = SystemMessage(content=prompt_text)
+    # Prompt for later rounds: allow 'complete: true'
+    final_prompt = base_prompt + (
+        "- If the answer is complete, well-cited, and includes referenced IDs, you may return 'complete': true.\n"
+        "- Otherwise, suggest improvements and reroute the query.\n"
+    )
 
     def _reviewer(state: dict) -> dict:
-       # print(f"[REVIEWER] State: {state}")
-        print(f"[REVIEWER] Retry count: {state['retry_count']}")
+        reviews = state.get('retry_count', 0)
+        print(f"[REVIEWER] Retry count: {reviews}")
 
-        reviews = state['retry_count']
+        # Use the correct prompt depending on stage
+        system_prompt = SystemMessage(
+            content=first_round_prompt if reviews == 0 else final_prompt
+        )
+
+        # Early stop
         if reviews >= max_reviews:
             return {
                 **state,
@@ -63,20 +77,14 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
                 'messages': state.get('messages', []),
             }
 
-        # Extract last human question and AI answer
         question = state['question']
         final_answer = state['final_answer']
         elements = state['model_query_result']
 
-
-        # Build and run the LLM chain
         chat_prompt = ChatPromptTemplate.from_messages([
-            system_message,
-            HumanMessage(content=f"Question: {question}\n Number of tries before this {reviews} Answer: {final_answer} Relevant model elemenents found: {elements} "),
+            system_prompt,
+            HumanMessage(content=f"Question: {question}\nRetry: {reviews}\nAnswer: {final_answer}\nRelevant model elements: {elements}")
         ])
-        
-        print(f"[REVIEWER] PROMPT: {chat_prompt}")
-
 
         chain = (
             chat_prompt
@@ -89,26 +97,27 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
             )
             | StrOutputParser()
         )
+
         raw = chain.invoke({})
         try:
-            # strip and parse
             raw_txt = raw.strip().lstrip("```json").rstrip("```").strip()
             parsed = json.loads(raw_txt)
-            print(f"[REVIEWER] parsed: {parsed}")
         except json.JSONDecodeError:
-            parsed = {"complete": True, "answer": "Reviewer parsing error.", "call": None}
+            parsed = {
+                "complete": True,
+                "answer": "Reviewer failed to parse output.",
+                "call": None
+            }
+
+        print(f"[REVIEWER] parsed: {parsed}")
         call = parsed.get("call")
-
-
         new_msgs = state.get("messages", []) + [AIMessage(content=parsed["answer"])]
-
-        print(f"[REVIEWER] Parsed next to call: {call}")
 
         return {
             **state,
             "complete": parsed.get("complete", False),
             "messages": new_msgs,
-            "retry_count": state.get("retry_count", 0) + 1,
+            "retry_count": reviews + 1,
             "call": call,
             "question_for_model": parsed.get("question_for_model"),
             "question_for_rag": parsed.get("question_for_rag")

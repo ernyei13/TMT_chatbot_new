@@ -54,7 +54,7 @@ class AgentState(TypedDict):
     followup_q: List[str]
 
 
-# ----------- BUILD STATE GRAPH -----------
+# ----------- BUILD GRAPH -----------
 def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable, settings: dict):
 
     #set the settings from the frontend
@@ -66,7 +66,7 @@ def build_sysml_langgraph_agent(elements: Dict[str, Any], retriever_fn: Callable
     print(f"[RAG] max documents: {rag_max_documents}")
     
     rag_agent = make_rag_agent(
-        lambda q: retrieve_text_from_azure_search(q, 0, rag_max_documents, True, True) 
+        lambda q, kw: retrieve_text_from_azure_search(q, kw, 0, rag_max_documents, True, True) 
     )
 
     # Create agents

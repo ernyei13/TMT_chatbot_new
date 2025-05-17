@@ -105,7 +105,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
         question = state["question"]
 
         if state.get("question_for_model") is not None:
-            question = "original question:" + question + " new question from the reviewer agent: " + state["question_for_model"]
+            question = "new question from the reviewer agent: " + state["question_for_model"]
 
         print("[GRAPH AGENT] Question to the Graph query agent:", question)
         

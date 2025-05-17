@@ -18,6 +18,7 @@ LANGUAGE = os.getenv("LANGUAGE", "en-us")
 
 def retrieve_text_from_azure_search(
     search_term: str,
+    keywords: str,
     relevance_threshold: float,
     max_documents: int,
     reranker: bool,
@@ -49,13 +50,16 @@ def retrieve_text_from_azure_search(
 
     query_type = "semantic" if reranker else "simple"
 
+    combined_search = f"{search_term} {' '.join(keywords)}".strip()
+
+
     payload = {
-        "search": search_term,
+        "search": combined_search,
         "count": True,
         "vectorQueries": [
             {
                 "kind": "text",
-                "text": search_term,
+                "text": combined_search,
                 "fields": TEXT_VECTOR_FIELD,
                 "queryRewrites": "generative"
             }
@@ -113,12 +117,3 @@ def _looks_like_table_of_contents(text: str) -> bool:
     has_many_numbers = sum(c.isdigit() for c in text) > 10
     return has_many_dots and has_many_numbers
 
-
-results = retrieve_text_from_azure_search(
-        search_term="test",
-        relevance_threshold=0.5,
-        max_documents=2,
-        reranker=True,
-        exclude_table_of_contents=True
-    )
-print(json.dumps(results, indent=2))

@@ -62,7 +62,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
             api_version="2025-02-01-preview"
         )
 
-        prompt_rephrase = f"Rephrase the following question for a RAG agent: {question}"
+        prompt_rephrase = f"Analyze the following user question and extract 3–5 key terms or phrases that best capture its essence: User Question: {question} Focus on nouns, key concepts. Separate terms with commas. Key Terms:"
         
         messages = [{"role": "user", "content": prompt_rephrase}] # Single function call
 
@@ -71,10 +71,11 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
             messages=messages,
         )
 
-        question_refined = response.choices[0].message.content
-        print(f"[RAG] rephrased question: {question_refined}")
+        keywords = response.choices[0].message.content
 
-        context_chunks = retriever_fn(question_refined)
+        print(f"[RAG] keywords: {keywords}")
+
+        context_chunks = retriever_fn(question, keywords)
         context = state.get("context")
         if context is not None:
             context.append(context_chunks)
