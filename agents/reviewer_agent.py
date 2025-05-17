@@ -66,11 +66,13 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
         # Extract last human question and AI answer
         question = state['question']
         final_answer = state['final_answer']
+        elements = state['model_query_result']
+
 
         # Build and run the LLM chain
         chat_prompt = ChatPromptTemplate.from_messages([
             system_message,
-            HumanMessage(content=f"Question: {question}\n Number of tries before this {reviews} Answer: {final_answer}"),
+            HumanMessage(content=f"Question: {question}\n Number of tries before this {reviews} Answer: {final_answer} Relevant model elemenents found: {elements} "),
         ])
         
         print(f"[REVIEWER] PROMPT: {chat_prompt}")
