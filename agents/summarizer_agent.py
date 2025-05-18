@@ -23,6 +23,7 @@ load_dotenv()
 class Summarizer:
     def __init__(self):
         print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_ENDPOINT')}")
+        print(f"[Summarizer] Summarizer model: {os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')}")
         self.llm = AzureChatOpenAI(
                 deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
                 api_key=os.getenv("AZURE_OPENAI_API_KEY"),

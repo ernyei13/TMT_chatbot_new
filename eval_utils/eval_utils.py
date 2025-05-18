@@ -19,6 +19,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from openai import AzureOpenAI
 import csv
+import re
 
 
 import pandas as pd
@@ -112,21 +113,24 @@ def compute_llm_judge(question: str,
         raise RuntimeError(f"LLM judge error: {e}")
 
 
-def compute_keyword_count(response: str,
-                          keywords: list[str]) -> int:
+
+def compute_keyword_count(response: str, keywords: list[str]) -> int:
     """
     Count how many of the specified keywords appear in the response.
-    Case-insensitive substring match.
+    Case-insensitive full word or phrase match.
     """
     if not isinstance(response, str) or not keywords:
         return 0
 
-    resp_lower = response.lower()
+    resp_lower = " ".join(response.lower().split())
     count = 0
-    for kw in keywords:
-        if isinstance(kw, str) and kw.lower() in resp_lower:
-            count += 1
+    for kw in set(keywords):
+        if isinstance(kw, str):
+            pattern = r'\b' + re.escape(kw.lower()) + r'\b'
+            if re.search(pattern, resp_lower):
+                count += 1
     return count
+
 
 
 def get_azure_openai_client():

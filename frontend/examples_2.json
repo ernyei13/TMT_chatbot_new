@@ -7,18 +7,24 @@
     "keywords": ["APS", "TMT", "M1", "M2", "M3", "mirror"]
   },
   {
-    "id": "J-TC-1",
+    "id": "J-TC-2",
     "category": "Junior Examples",
     "question": "What are the main packages in the model?",
     "expected_answer": "The model consists of two main parts: the Observatory model managed by the TMT project office (PO) and the JPL-managed model that includes the APS. Both models follow the OOSEM methodology, which captures the operational context, mission, blackbox specifications, and logical and physical designs.",
-    "keywords": ["Observatory model", "JPL", "APS", "OOSEM"]
+    "keywords": ["Observatory model", "JPL", "APS", "OOSEM", "APS_PEAS"]
   },
   {
-    "id": "J-TC-2",
+    "id": "J-TC-3",
     "category": "Junior Examples",
     "question": "What’s the main purpose of the model?",
     "expected_answer": "The model is primarily used to verify timing requirements. It does this through the behavioral specification of the as-designed system, particularly focusing on various operational and calibration procedures.",
-    "keywords": ["timing requirements", "behavioral specification", "operational procedures", "calibration procedures"]
+    "keywords": [
+      "Performance Verification",
+      "Timing Constraints",
+      "APS_PEAS",
+      "Parametric Analysis",
+      "Alignment Procedures"
+    ]
   },
   {
     "id": "M-TC-1",
@@ -88,7 +94,7 @@
     "category": "Expert Examples",
     "question": "What are the interfaces of the APS blackbox specification?",
     "expected_answer": "The APS blackbox specification defines multiple interfaces including PEAS2M1CSOut, PEAS2TCS and PEAS2ESW proxy ports, PEAS2CS, APS2User interfaces, and data exchange with GC2ESW and GCDataOut.",
-    "keywords": ["inout PEAS2M1CSOut : TMT::01", "PEAS2TCSIn «ProxyPort»", "PEAS2TCSOut «ProxyPort»", "PEAS2ESWIn «ProxyPort»", "PEAS2ESWOut «ProxyPort»", "PEAS2M1CSIn «ProxyPort»", "PEAS2CSIn", "PEAS2CSOut", "APS2UserIn «ProxyPort»", "APS2UserOut «ProxyPort»", "GC2ESWIn", "GC2ESWOut", "GCDataOut"]
+    "keywords": ["inout PEAS2M1CSOut : TMT::01", "PEAS2TCSIn", "PEAS2TCSOut", "PEAS2ESWIn", "PEAS2ESWOut", "PEAS2M1CSIn", "PEAS2CSIn", "PEAS2CSOut", "APS2UserIn", "APS2UserOut", "GC2ESWIn", "GC2ESWOut", "GCDataOut"]
   },
   {
     "id": "X-TC-8",
@@ -112,14 +118,14 @@
     "keywords": ["APS User", "Telescope Control System", "M1 Control System", "Common Services", "Executive Software"]
   },
   {
-    "id": "X-TC-11",
+    "id": "X-TC-12",
     "category": "Expert Examples",
     "question": "What are the structural elements of the APS mission?",
     "expected_answer": "The structural elements of the APS mission include various systems and interfaces such as the APS User, Telescope Control System, M1 Control System, Common Services, Executive Software, and the APS Operational Blackbox Specification developed by JPL.",
     "keywords": ["APS User", "Telescope Control System", "M1 Control System", "Common Services", "Executive Software", "APS Operational Blackbox Specification JPL"]
   },
   {
-    "id": "X-TC-11",
+    "id": "X-TC-13",
     "category": "Expert Examples",
     "question": "What are the verified requirements of the APS?",
     "expected_answer": "The verified requirements include power and time constraints such as Peak Power Limit, maximum alignment durations for Post Segment Exchange, Maintenance, M3, and Off-Axis operations, as well as requirements for Warping Harness, Self Test, and Pupil Alignment.",

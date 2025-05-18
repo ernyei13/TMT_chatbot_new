@@ -53,7 +53,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
      
         # Retrieve context chunks for the question
         if state.get("question_for_rag") is not None:
-            question = "original question:" + question + " new question from the reviewer agent: " + state["question_for_rag"]
+            question = "question: " + state["question_for_rag"]
 
         #rephase the question
         client = AzureOpenAI(
