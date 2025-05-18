@@ -87,7 +87,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
         Based on the question you receive, output a JSON query to filter SysML elements by applying conditions to fields like sysml_type, type, name, documentation, creator, modified, created, and return related elements (such as children or owner) if needed.
 
         Ensure that the response is well-structured and uses logical operations such as "contains", "equals", or "startswith" where necessary.
-        Your response must be ready for parsing in Python. NEVER return raw text or unstructured data. Never return a query that is not in JSON format. Never return an empty query.
+        Your response must be ready for parsing in Python. NEVER return raw text or unstructured data. Never return a query that is not in JSON format. Never return an empty query. Never explain yourself.
         """
 
     def _agent(state: dict) -> dict:
@@ -105,7 +105,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
         question = state["question"]
 
         if state.get("question_for_model") is not None:
-            question = "new question from the reviewer agent: " + state["question_for_model"]
+            question = "question: " + state["question_for_model"]
 
         print("[GRAPH AGENT] Question to the Graph query agent:", question)
         
@@ -168,15 +168,24 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
                             results = element.serialize(max_depth=1)
                             break
 
-                if len(results) != 0 or result_char_len >= max_results_length:
+                if len(results) != 0 and len(results) <= 100:
                     break
+
+                if result_char_len  > 1000000:
+                    retry_reason = "Too many elements matched the query. Try again without including any relations."
+                    results = []
+                    print("Too many chars.")
+
 
                 if len(results) == 0:
                     retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name. Try less filters. Do not try the same filter again. Try only one."
+                    results = []
                     print("No elements matched the query.")
-                else:
+                elif len(results) > 100:
                     retry_reason = f"Too many elements matched the query. Try again with more specific filters."
-                    print("Too many elements matched the query: ", result_char_len)
+                    results = []
+                    print("Too many elements matched the query: ", len(results) )
+
 
                 retry_prompt = (
                     f"{retry_reason} Try making the filters more accurate.\n"
@@ -192,8 +201,13 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 
             except Exception as e:
                 print("Failed to parse the query:", e)
-                results = []
-                break
+                retry_prompt = (
+                    f"ONLY RETURN A VALID JSON.\n"
+                    f"The previous filters were:\n{json.dumps(query, indent=2)}\n"
+                    "Try using a different filter.\n"
+                )
+                continue
+                
 
             print("Retrying query... Attempt", attempts + 1, "of", max_attempts)
             attempts += 1
@@ -202,13 +216,38 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
         print("number of retrieved model elements:", len(results))
         #print how many elements actually sent
         elements_new = state.get("model_query_result")
-        for r in results:
+
+        print(type(elements_new))
+
+        elements_new = state.get("model_query_result")
+
+        print(f"[GRAPH] model_query_result type: {type(elements_new)}")
+        print(f"[GRAPH] results type: {type(results)}")
+
+        # Handle case where result is a single serialized element (dict or string)
+        if isinstance(results, str):
             try:
-                elements_new[r["id"]] = r
+                results = [json.loads(results)]
             except Exception as e:
-                print("Failed to add element to the list, only including the newly found element", e)
-                elements_new = results
-                continue
+                print("Failed to parse stringified result:", e)
+                results = []
+
+        if isinstance(results, dict):
+            results = [results]
+
+        # Ensure elements_new is initialized correctly
+        if elements_new is None:
+            elements_new = {}
+
+        # Safely merge results
+        if isinstance(elements_new, dict):
+            for r in results:
+                if isinstance(r, dict) and "id" in r:
+                    elements_new[r["id"]] = r
+        elif isinstance(elements_new, list):
+            elements_new.extend(results)
+        else:
+            print(f"[ERROR] Unsupported model_query_result type: {type(elements_new).__name__}")
 
 
         return {

@@ -30,6 +30,8 @@ st.session_state.logged_in = True
 
 from dotenv import load_dotenv
 load_dotenv(override=True)
+EVAL_ENABLED = False
+
 
 
 if "logged_in" not in st.session_state:
@@ -77,9 +79,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tab_chat, tab_eval = st.tabs(["Chat", "Evaluation"])
-
-
+if EVAL_ENABLED:
+    tab_chat, tab_eval = st.tabs(["Chat", "Evaluation"])
+else:
+    tab_chat, = st.tabs(["Chat"])
 
 # Adjust the sidebar width using custom CSS
 st.markdown("""
@@ -114,6 +117,7 @@ with st.sidebar:
 # Tabs
 with tab_chat:
     render_chat_tab()
-
-with tab_eval:
-    render_eval_tab()
+    
+if EVAL_ENABLED:
+    with tab_eval:
+        render_eval_tab()

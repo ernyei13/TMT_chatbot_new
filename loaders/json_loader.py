@@ -183,3 +183,4 @@ def load_elements():
                 e.sysml_type.append(SYSML_TYPE_MAPPING[stereo])
     print(f"Loaded {len(elements)} elements from JSON.")
     return elements
+

@@ -42,7 +42,7 @@ def _settings_hash(settings: dict) -> str:
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
     question: str
-    rag_context: Dict[str, Any]
+    rag_context: List[Any]
     question_for_rag: str
     question_for_model: str
     model_query_result: Dict[str, Any]

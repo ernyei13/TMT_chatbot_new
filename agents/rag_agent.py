@@ -75,11 +75,16 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
 
         print(f"[RAG] keywords: {keywords}")
 
+
         context_chunks = retriever_fn(question, keywords)
-        context = state.get("context")
-        if context is not None:
-            context.append(context_chunks)
-        context = context_chunks
+
+        context = state.get("rag_context", {})
+        if isinstance(context, dict) and isinstance(context_chunks, dict):
+            context.update(context_chunks)  # Merge retrieved chunks into current context
+            print("[RAG] updated context")
+        else:
+            context = context_chunks  # fallback
+
 
         # Build the prompt
         prompt = ChatPromptTemplate.from_template(

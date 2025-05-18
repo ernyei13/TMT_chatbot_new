@@ -1,7 +1,6 @@
 
 from loaders.json_loader import load_elements
 from typing import Callable, Dict, Any, List
-import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
@@ -15,6 +14,7 @@ from langchain_core.messages import HumanMessage
 from langgraph.graph import END, StateGraph, START
 from dotenv import load_dotenv
 import os
+import re
 
 # Load environment variables from .env file
 load_dotenv()
@@ -94,12 +94,21 @@ class Summarizer:
             assert os.path.exists(d), "SVG file does not exist."
 
             with open(d, "r", encoding="utf-8") as file:
-                svg_text = file.read()
-                if len(svg_text) < 100000:
-                    diagram_svgs.append(svg_text)
+                svg = file.read()
+                svg = re.sub(r'<style[\s\S]*?</style>', '', svg)
+                svg = re.sub(r'style="[^"]*"', '', svg)
+                svg = re.sub(r'fill="[^"]*"', '', svg)
+                svg = re.sub(r'stroke="[^"]*"', '', svg)
+                svg = re.sub(r'<metadata[\s\S]*?</metadata>', '', svg)
+                svg = re.sub(r'<!--[\s\S]*?-->', '', svg)
+                svg = re.sub(r'<image[\s\S]*?</image>', '', svg)  # Remove embedded images
+
+                if len(svg) < 200000:
+                    diagram_svgs.append(svg)
                 else:
+
                     continue
-                
+                    
         print("lenght of diagrams")
         print(len("\n".join(diagram_svgs)))
         print("length of context")
@@ -113,6 +122,15 @@ class Summarizer:
             diagrams=diagram_svgs,
             question=question
         )
+        print(f'[SUMMARIZER] LENGTH OF INPUT: {len("".join(prompt))}')
+
+        if len("".join(prompt)) > 10485760:
+            prompt = self.prompt_template.format(
+                model_query_result=model_query_str[:100000],
+                rag_result=rag_result,
+                diagrams=diagram_svgs,
+                question=question
+            )
 
         # Call the LLM to summarize the response
         response = self.llm.invoke(prompt)
