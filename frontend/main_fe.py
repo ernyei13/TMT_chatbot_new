@@ -53,7 +53,7 @@ st.expander(":red[IMPORTANT DISCLAMER]", expanded=False).markdown(
     - The chatbot can answer questions about the TMT documentation and SysML model elements.
     - NO GUARDRAILS ARE RESTRICTING THE SYSTEM. PLEASE ACT ACCORDINGLY AND NOT TRY TO BREAK IT.
     - There is no memory of the conversation, so each question is treated **independently**.
-    - v0.0.5
+    - v0.0.6
 
     """
 )
@@ -95,7 +95,7 @@ st.markdown("""
 
 
 with st.sidebar:
-    st.warning("ONLY USE THE SIDEBAR WHILE THE ASSISTANT IS NOT GENERATING.")
+    st.warning("ONLY USE THE SIDEBAR WHILE THE ASSISTANT IS NOT RUNNING.")
     st.header("Agent Settings")
     st.checkbox("Enable Reviewer Agent", key="enable_reviewer_agent")
     st.selectbox("Max Retry of Reviewer", range(6), key="max_retry_reviewer", index=1)

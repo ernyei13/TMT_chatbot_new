@@ -74,19 +74,25 @@ def render_chat_tab() -> None:
                 # Context
                 if show_context:
                     st.markdown("**📚 Documentation Context Used:**")
-                    context = result_data.get("rag_context", [])
-                    if context:
-                        for i, chunk in enumerate(context):
-                            title = chunk.get("title", f"Source {i+1}")
-                            score = chunk.get("score", 0.0)
-                            text = chunk.get("text", "No text available.")
+                    # Ensure context is initialized as a dictionary if not found
+                    # Assuming 'rag_context' in result_data is now a dictionary
+                    context_chunks_dict = result_data.get("rag_context", {}) 
+                    
+                    # Check if the dictionary contains any chunks
+                    if context_chunks_dict:
+                        # Iterate over the VALUES of the dictionary (which are the actual chunk dictionaries)
+                        for i, chunk_data in enumerate(context_chunks_dict.values()):
+                            # Now 'chunk_data' is a dictionary, so .get() will work
+                            title = chunk_data.get("title", f"Source {i+1}")
+                            score = chunk_data.get("score", 0.0)
+                            text = chunk_data.get("text", "No text available.")
+                            
                             with st.expander(f"Context: {title} (Score: {score:.3f})", expanded=False):
                                 st.markdown(f"**Source:** `{title}`")
                                 st.markdown(f"**Score:** `{score:.3f}`")
                                 st.info(text)
                     else:
-                        st.caption("No documentation context was retrieved.")
-                    st.write("---")
+                        st.info("No relevant context chunks found.") # Provide a message when no context
                 # Elements
                 if show_elements:
                     st.markdown("**🧩 Relevant Model Elements:**")
@@ -209,14 +215,23 @@ def render_chat_tab() -> None:
                 if show_context:
                     st.markdown("**📚 Documentation Context Used:**")
                     for i, chunk in enumerate(assistant_response_data["rag_context"]):
-                        title = chunk.get("title", f"Source {i+1}")
-                        score = chunk.get("score", 0.0)
-                        text = chunk.get("text", "No text available.")
+                        if isinstance(chunk, dict):
+                            title = chunk.get("title", f"Source {i+1}")
+                            score = chunk.get("score", 0.0)
+                            text = chunk.get("text", "No text available.")
+                        elif isinstance(chunk, str):
+                            title = f"Source {i+1}"
+                            score = 0.0
+                            text = chunk
+                        else:
+                            title = f"Source {i+1}"
+                            score = 0.0
+                            text = str(chunk)
                         with st.expander(f"Context: {title} (Score: {score:.3f})", expanded=False):
                             st.markdown(f"**Source:** `{title}`")
                             st.markdown(f"**Score:** `{score:.3f}`")
                             st.info(text)
-                    st.write("---")
+
                 if show_elements:
                     st.markdown("**🧩 Relevant Model Elements:**")
                     for i, element in enumerate(assistant_response_data["model_query_result"]):
@@ -240,7 +255,8 @@ def render_chat_tab() -> None:
                                 st.warning(f"Not found: {path}")
  
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response_data})
-                st.session_state["trigger_rerun"] = True
+               
+                st.rerun()
                 
 
             except Exception as e:

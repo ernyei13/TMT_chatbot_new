@@ -85,7 +85,7 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
 
         chat_prompt = ChatPromptTemplate.from_messages([
             system_prompt,
-            HumanMessage(content=f"Question: {question}\nRetry: {reviews}\nAnswer: {final_answer}\nRelevant model elements: {elements}")
+            HumanMessage(content=f"Question: {question}\nRetry: {reviews}\nAnswer: {final_answer}")
         ])
 
         chain = (

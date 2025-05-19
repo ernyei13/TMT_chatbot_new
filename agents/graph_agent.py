@@ -178,7 +178,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 
 
                 if len(results) == 0:
-                    retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name. Try less filters. Do not try the same filter again. Try only one."
+                    retry_reason = "No elements matched the query. Try again with a different, less restricting filter. Try searching for name. Try less filters. Do not try the same filter again. Try only one filter."
                     results = []
                     print("No elements matched the query.")
                 elif len(results) > 100:
@@ -189,8 +189,9 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 
                 retry_prompt = (
                     f"{retry_reason} Try making the filters more accurate.\n"
-                    f"The previous filters were:\n{json.dumps(query, indent=2)}\n"
-                    "Try using a different filter strategy.\n"
+                    f"The previous filters were:\n {json.dumps(query, indent=2)}\n"
+                    "If there are more than 6 filters create ONE filter only filtering the name or the documentation of the elements.\n"
+                    "Try using a different filter.\n"
                 )
 
                 response = chain.invoke({
@@ -201,11 +202,7 @@ def make_query_builder_agent(elements, max_retry) -> RunnableLambda:
 
             except Exception as e:
                 print("Failed to parse the query:", e)
-                retry_prompt = (
-                    f"ONLY RETURN A VALID JSON.\n"
-                    f"The previous filters were:\n{json.dumps(query, indent=2)}\n"
-                    "Try using a different filter.\n"
-                )
+                attempts += 1
                 continue
                 
 

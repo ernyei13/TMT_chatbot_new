@@ -23,7 +23,7 @@ def retrieve_text_from_azure_search(
     max_documents: int,
     reranker: bool,
     exclude_table_of_contents: bool
-) -> list[dict]:
+) -> dict: # <-- Changed return type hint to dict
     """
     Queries Azure AI Search and returns RAG-usable caption chunks
     with metadata including relevance scores.
@@ -36,7 +36,8 @@ def retrieve_text_from_azure_search(
         exclude_table_of_contents (bool): If true, filters TOC-like results.
 
     Returns:
-        list[dict]: List of result dictionaries with score, text, and metadata.
+        dict: Dictionary of result dictionaries with chunk_id as key,
+              and score, text, and metadata as value.
     """
     url = (
         f"{AZURE_SEARCH_ENDPOINT}/indexes/{AZURE_SEARCH_INDEX}/docs/search"
@@ -78,7 +79,12 @@ def retrieve_text_from_azure_search(
     response.raise_for_status()
 
     data = response.json()
-    results = []
+    
+    # Change: Initialize results as a dictionary
+    results_dict = {} 
+    
+    # Counter for max_documents
+    documents_added = 0
 
     for result in data.get("value", []):
         score = result.get("@search.score", 0.0)
@@ -88,26 +94,37 @@ def retrieve_text_from_azure_search(
         title = result.get("title", "")
         chunk_id = result.get("chunk_id", "")
 
+        # Crucial check: ensure chunk_id exists and is unique for keys
+        if not chunk_id:
+            # You might want to generate a unique ID or skip this result
+            # if chunk_id is not guaranteed to be present or unique.
+            # For simplicity, we'll use a fallback if chunk_id is missing/empty.
+            # A more robust solution might hash the text or use a counter.
+            chunk_id = f"no_id_{len(results_dict) + 1}" 
+
+
         if score < relevance_threshold:
             continue
 
         if exclude_table_of_contents and _looks_like_table_of_contents(text):
             continue
 
-        results.append({
+        # Add to dictionary using chunk_id as key
+        results_dict[chunk_id] = {
             "text": text,
             "score": score,
             "key": key,
             "highlights": highlights,
             "title": title,
-            "chunk_id": chunk_id
-        })
+            # "chunk_id": chunk_id # No need to repeat chunk_id inside the value if it's the key
+        }
+        
+        documents_added += 1
 
-        if len(results) >= max_documents:
+        if documents_added >= max_documents:
             break
 
-    return results
-
+    return results_dict # <-- Return the dictionary
 
 def _looks_like_table_of_contents(text: str) -> bool:
     """
@@ -116,4 +133,3 @@ def _looks_like_table_of_contents(text: str) -> bool:
     has_many_dots = text.count(".") > 10
     has_many_numbers = sum(c.isdigit() for c in text) > 10
     return has_many_dots and has_many_numbers
-

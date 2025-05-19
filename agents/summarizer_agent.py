@@ -126,7 +126,7 @@ class Summarizer:
 
         if len("".join(prompt)) > 10485760:
             prompt = self.prompt_template.format(
-                model_query_result=model_query_str[:100000],
+                model_query_result=model_query_str[:1000000],
                 rag_result=rag_result,
                 diagrams=diagram_svgs,
                 question=question
