@@ -30,7 +30,7 @@ st.session_state.logged_in = True
 
 from dotenv import load_dotenv
 load_dotenv(override=True)
-EVAL_ENABLED = False
+EVAL_ENABLED = True
 
 
 
@@ -53,7 +53,7 @@ st.expander(":red[IMPORTANT DISCLAMER]", expanded=False).markdown(
     - The chatbot can answer questions about the TMT documentation and SysML model elements.
     - NO GUARDRAILS ARE RESTRICTING THE SYSTEM. PLEASE ACT ACCORDINGLY AND NOT TRY TO BREAK IT.
     - There is no memory of the conversation, so each question is treated **independently**.
-    - v0.0.1
+    - v0.0.2
 
     """
 )

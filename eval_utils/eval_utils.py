@@ -243,6 +243,7 @@ def run_batch_evaluation(data: list, client, deployment, settings: dict, output_
             "judge_comment": judge_comment,
             "keyword_count": kw_count,
             "keyword_coverage": f"{kw_coverage:.0f}%",
+            "settings": settings,
         })
 
         row = {
@@ -254,12 +255,13 @@ def run_batch_evaluation(data: list, client, deployment, settings: dict, output_
             "keyword_count": kw_count,
             "keyword_coverage": f"{kw_coverage:.0f}%",
             "result": result.get("final_answer", ""),
+            "settings": settings,
         }
 
         header = [
             "id", "question", "similarity",
             "judge_score", "judge_comment",
-            "keyword_count", "keyword_coverage", "result",
+            "keyword_count", "keyword_coverage", "result", "settings"
         ]
                 # Append result to CSV
         with open(output_csv_path, mode="a", newline="", encoding="utf-8") as f:

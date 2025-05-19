@@ -50,7 +50,8 @@ def make_reviewer_agent(max_reviews: int) -> RunnableLambda:
     # Prompt for first round: complete must be false
     first_round_prompt = base_prompt + (
         "- You are in the initial round. Never return 'complete': true, even if the answer seems decent.\n"
-        "- Always suggest what to improve and which agent to call.\n"
+        "- Always call the rag_agent.\n"
+        "- Provide a new refined short question to both agents.\n"
         "- You are expected to drive iteration at this stage.\n"
     )
 
