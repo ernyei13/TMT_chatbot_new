@@ -26,7 +26,11 @@ except ImportError as e:
 
 def render_chat_tab() -> None:
     """Renders the chat agent interface just like chat_app.py."""
+    if st.session_state.get("trigger_rerun"):
+        st.session_state.pop("trigger_rerun", None)
+        st.rerun()
     st.caption("Ask questions about the TMT SysML model and documentation.")
+
 
     # Add custom CSS to lock the chat input to the bottom of the screen
     st.markdown("""
@@ -141,9 +145,9 @@ def render_chat_tab() -> None:
 
     if prompt := st.chat_input("Ask about the TMT...") or q:
         
-
         if prompt:
             st.session_state.messages.append({"role": "user", "content": prompt})
+            
         if st.session_state.get("user_question"):
             st.session_state.messages.append({"role": "user", "content": st.session_state.get("user_question")})
 
@@ -166,16 +170,22 @@ def render_chat_tab() -> None:
 
             }
             try:
-                agent_input = {
-                    "messages": [HumanMessage(content=prompt)],
-                    "model_query_result": {},
-                    "rag_context": {}
-                }
-                if show_thinking_steps:
-                    agent_response = execute_agent_query(agent_input, settings, logger=progress_log)
-                else:
-                    agent_response = execute_agent_query(agent_input, settings)
+                
+                
 
+                if "agent_response" not in st.session_state:
+                    st.session_state["is_generating"] = True
+                    with st.spinner("Assistant is running..."):
+                        agent_input = {
+                            "messages": [HumanMessage(content=prompt)],
+                            "model_query_result": {},
+                            "rag_context": {}
+                        }
+                        agent_response = execute_agent_query(agent_input, settings, logger=progress_log)
+                        st.session_state["agent_response"] = agent_response
+                        st.session_state["is_generating"] = False
+                
+                agent_response = st.session_state["agent_response"]
                 assistant_response_data = {
                     "final_answer": agent_response.get("final_answer", "Error: no answer."),
                     "rag_context": agent_response.get("rag_context", []),
@@ -183,8 +193,11 @@ def render_chat_tab() -> None:
                     "diagrams": agent_response.get("diagrams", []),
                     "followup_q": agent_response.get("followup_q", None)
                 }
+
                 st.session_state.followup_q = agent_response.get("followup_q", None)
                 print(f"Followup question: {st.session_state.followup_q}")
+                st.session_state.pop("agent_response", None)  # So it doesn't rerender on next run
+
                 
 
                 placeholder.empty()
@@ -225,14 +238,14 @@ def render_chat_tab() -> None:
                                 st.image(path, use_container_width=True)
                             else:
                                 st.warning(f"Not found: {path}")
+ 
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response_data})
-                
-
-                st.rerun()
-                st.session_state.pop("messages", None)
+                st.session_state["trigger_rerun"] = True
                 
 
             except Exception as e:
+                st.session_state["is_generating"] = False
+
                 placeholder.empty()
                 st.error(f"An error occurred: {e}")
                 st.exception(e)
