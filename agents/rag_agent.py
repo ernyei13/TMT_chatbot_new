@@ -67,7 +67,7 @@ def make_rag_agent(retriever_fn: Callable) -> RunnableLambda:
         messages = [{"role": "user", "content": prompt_rephrase}] # Single function call
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
             messages=messages,
         )
 
