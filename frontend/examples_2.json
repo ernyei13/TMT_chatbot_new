@@ -130,5 +130,39 @@
     "question": "What are the verified requirements of the APS?",
     "expected_answer": "The verified requirements include power and time constraints such as Peak Power Limit, maximum alignment durations for Post Segment Exchange, Maintenance, M3, and Off-Axis operations, as well as requirements for Warping Harness, Self Test, and Pupil Alignment.",
     "keywords": ["Peak Power Limit Requirement JPL", "On-axis alignment maximum time for Post Segment Exchange JPL", "Maintenance Alignment Maximum Time", "M3 Alignment Maximum Time", "Off-Axis Acquisition Maximum Time", "Warping Harness Maximum Time", "Self Test Maximum Time", "Telescope Pupil Alignment Requirement"]
+  },
+  {
+    "id": "X-TC-14",
+    "category": "Expert Examples",
+    "question": "What signals are sent by the PEAS state machine?",
+    "expected_answer": "The signals sent by the PEAS state machine are: APT_Take_exposure_Cmd, Cmd_Arm_Back, Cmd_Arm_Position, Cmd_LightSource_Off, Cmd_LightSource_On, Cmd_Stimulus_Off, Cmd_Stimulus_On, Get K-MirrPos_Query, Get ShearPlatePos_Cmd, MoveBSS_TT_Cmd, PIT_Take_exposure_Cmd, PIT_Update_Camera_Params_Cmd, Referencebeam Off Cmd, Referencebeam On Cmd, Select APT Filter_Cmd, Select PIT Filter_Cmd, Select PIT PupilMask_Cmd, Select SH Filter_Cmd, Select SH PupilMask_Cmd, Set_ShearPlate_Pos_Cmd, SH_Take_exposure_Cmd, Shutter Close Cmd, Shutter Open Cmd, Start K-Mirr_Cmd, Update K-Mirr_Cmd.",
+    "keywords": [
+      "APT_Take_exposure_Cmd",
+      "Cmd_Arm_Back",
+      "Cmd_Arm_Position",
+      "Cmd_LightSource_Off",
+      "Cmd_LightSource_On",
+      "Cmd_Stimulus_Off",
+      "Cmd_Stimulus_On",
+      "Get K-MirrPos_Query",
+      "Get ShearPlatePos_Cmd",
+      "MoveBSS_TT_Cmd",
+      "PIT_Take_exposure_Cmd",
+      "PIT_Update_Camera_Params_Cmd",
+      "Referencebeam Off Cmd",
+      "Referencebeam On Cmd",
+      "Select APT Filter_Cmd",
+      "Select PIT Filter_Cmd",
+      "Select PIT PupilMask_Cmd",
+      "Select SH Filter_Cmd",
+      "Select SH PupilMask_Cmd",
+      "Set_ShearPlate_Pos_Cmd",
+      "SH_Take_exposure_Cmd",
+      "Shutter Close Cmd",
+      "Shutter Open Cmd",
+      "Start K-Mirr_Cmd",
+      "Update K-Mirr_Cmd"
+    ]
   }
+  
 ]
