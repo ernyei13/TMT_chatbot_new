@@ -1,4 +1,4 @@
-```markdown
+
 # TMT Chatbot
 
 An interactive chatbot designed to assist with the Thirty Meter Telescope (TMT) system engineering documents and models.
