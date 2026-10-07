@@ -3,6 +3,26 @@
 
 An interactive chatbot designed to assist with the Thirty Meter Telescope (TMT) system engineering documents and models.
 
+## Architecture and Workflow
+
+### Architecture Overview
+
+The assistant connects user questions with TMT documentation and the system model to produce answers with sources.
+
+![TMT chatbot architecture overview](chatbot_workflow_diagrams/highlevel.drawio.svg)
+
+### Chatbot Workflow
+
+The workflow shows documentation and model retrieval, summarization, review, and the final analysis.
+
+![TMT chatbot retrieval and analysis workflow](chatbot_workflow_diagrams/workflow.svg)
+
+### Documentation Context in the Frontend
+
+The frontend displays retrieved documentation, source files, relevance scores, and supporting excerpts.
+
+![Documentation context and sources in the chatbot frontend](chatbot_workflow_diagrams/frontend_docu.png)
+
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
